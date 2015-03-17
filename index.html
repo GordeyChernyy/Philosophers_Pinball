@@ -1,12 +1,22 @@
 <html>
 <head>
-
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="http://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.css">
+<script src="http://code.jquery.com/jquery-1.11.2.min.js"></script>
+<script src="http://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.js"></script>
   <!--<script language="javascript" type="text/javascript" src="p5.js"></script>-->
   <!-- uncomment lines below to include extra p5 libraries -->
  <!-- <script language="javascript" src="addons/p5.dom.js"></script>-->
   <!--<script language="javascript" src="../addons/p5.sound.js"></script>-->
    <!--<script language="javascript" type="text/javascript" src="sketch.js"></script>-->
   <!-- this line removes any default padding and style. you might only need one of these values set. -->
+  <script>
+  var defaultPrevent=function(e){e.defaultPreventDefault();}
+document.body.parentElement.addEventListener("touchstart", defaultPrevent);
+document.body.parentElement.addEventListener("touchmove" , defaultPrevent);
+document.body.addEventListener("touchstart", defaultPrevent);
+document.body.addEventListener("touchmove" , defaultPrevent);
+</script>
 <style>
 body, html { 
     overflow: hidden;
