@@ -52,8 +52,8 @@ function preload() {
 }
 // ----------------------------------------- Setup
 function setup() {
-    canvas = createCanvas(w, h);
-    canvas.position((windowWidth-w)/2, 50);
+    canvas = createCanvas(windowWidth, windowHeight);
+    canvas.position(0, 0);
     ball2Col = color(0, 255, 0);
     var ballCol = color(255, 255, 255);
     ball = new Ball(0, ballCol);
@@ -66,7 +66,7 @@ function setup() {
 
 }
 function windowResized(){
-    canvas.position((windowWidth-w)/2, 50);
+    canvas.position(0, 0);
 }
 // ----------------------------------------- Draw
 function draw() {
