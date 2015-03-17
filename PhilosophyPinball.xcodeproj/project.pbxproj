@@ -9,6 +9,7 @@
 /* Begin PBXFileReference section */
 		72230B031AB78845007E3CBB /* index.html */ = {isa = PBXFileReference; lastKnownFileType = text.html; path = index.html; sourceTree = "<group>"; };
 		72230B041AB78845007E3CBB /* sketch.js */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.javascript; path = sketch.js; sourceTree = "<group>"; };
+		72D7D2FE1AB8A58400BFF82B /* names.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = names.txt; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXGroup section */
@@ -17,6 +18,7 @@
 			children = (
 				72230B031AB78845007E3CBB /* index.html */,
 				72230B041AB78845007E3CBB /* sketch.js */,
+				72D7D2FE1AB8A58400BFF82B /* names.txt */,
 			);
 			sourceTree = "<group>";
 		};

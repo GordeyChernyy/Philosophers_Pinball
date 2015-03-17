@@ -1,9 +1,9 @@
-var w = 1000;
-var h = 600;
+var windowWidth = 1000;
+var windowHeight = 600;
 var levelMin = 0.02;
 var levelMax = 0.2; // optimal 0.02 0.2
 var level = 0;
-var levelScore = 5;
+var levelScore = 1;
 
 var ball, ball2;
 var ballSpeed = 10;
@@ -23,7 +23,7 @@ var border = 120;
 var rectsize = 100;
 var pLposX = border;
 var pLposY = 0;
-var pRposX = w-border;
+var pRposX = windowWidth-border;
 var pRposY = 0;
 var m = "test";
 var x = 0;
@@ -36,11 +36,15 @@ var faceChange = false;
 var pause = false;
 
 var kantCom;
+var names;
+var comment;
 var kantComNum = 0;
 var dekartCom;
 var dekartComNum = 0;
 var kant, kantPlain,  kantSad, kantHappy,
 dekart;
+
+var button;
 // ----------------------------------------- Preload
 function preload() {
     kantPlain = loadImage("images/kant.png");
@@ -49,6 +53,8 @@ function preload() {
     dekart = loadImage("images/dekart.png");
     kantCom = loadStrings('kant.txt');
     dekartCom = loadStrings('dekart.txt');
+    names = loadStrings('names.txt');
+    
 }
 // ----------------------------------------- Setup
 function setup() {
@@ -63,23 +69,25 @@ function setup() {
     pReyeL = new Eye();
     pReyeR = new Eye();
     dualism = new Power();
-
+    button = createButton('play');
+    button.mousePressed(play);
 }
 function windowResized(){
-    canvas.position(0, 0);
+    canvas = createCanvas(windowWidth, windowHeight);
+    button.mousePressed(play);
 }
 // ----------------------------------------- Draw
 function draw() {
+    
     background(0);
     if(!pause){
-        levelChek();
         ball.update();
         ball.draw();
         pLeft();
         pRight();
         dualball();
         score();
-        commentDraw();
+        levelChek();
     }else{
         pauseGame();
     }
@@ -90,24 +98,14 @@ function touchMoved(){
     pLposY = touchY-rectsize/2;
 }
 function mouseClicked(){
-    if(pause){
-        nextLevel();
-    }
+    
 }
 // ----------------------------------------- Function
-function commentDraw(){
-    textSize(12);
-    fill(255);
-    var t = kantCom[kantComNum];
-    var t2 = dekartCom[dekartComNum];
-    push();
-    translate(pLposX-100, pLposY+120);
-    text(t,0,0, 200, 100);
-    pop();
-    push();
-    translate(pRposX-100, pRposY+120);
-   text(t2,0,0, 200, 100);
-    pop();
+function play(){
+    if(pause){
+        nextLevel();
+        button.position(-200, -200);
+    }
 }
 function message(){
     noStroke();
@@ -159,15 +157,16 @@ function pLface(){
     pop();
 }
 function pRight(){
+    pRposX = windowWidth-border;
     var p = ball.pos;
     
     if(ball2.pos.x > ball.pos.x){
         p = ball2.pos;
     }
-    if(p.x>w/2){
+    if(p.x>windowWidth/2){
         pRposY = pRposY+(p.y-pRposY-rectsize/2)*random(levelMin, levelMax);
     }else{
-        var n = noise(frameCount/100.0)*h;
+        var n = noise(frameCount/100.0)*windowHeight;
         pRposY = pRposY+(n-pRposY-rectsize/2)*0.01;
     }
     pReyeL.update(p.x,p.y);
@@ -228,44 +227,64 @@ function dualball(){
 }
 function score(){
     textSize(15);
-    var info = "Level: "+level+"  |  Kant: "+pLScore+"  |  Descartes: "+pRScore;
+    var info = names[0]+" "+level+"  |  "+names[1]+" "+pLScore+"  |  "+names[2]+" "+pRScore;
     var tw = textWidth(info);
     if(showBall2){
-        var t = "Dualism:";
+        var t = names[3];
         text(t,30,30);
         var rw = map(dualismLife,0,dualismLifetime,100,0);
         rect(30,40,rw,5);
     }
     noStroke();
     fill(255);
-    text(info,w/2-tw/2,30);
+    text(info,windowWidth/2-tw/2,30);
 }
 function pauseGame(){
-    textSize(20);
-    var _t = "Level: "+level;
+    noStroke();
+    textSize(15);
+    var _t = names[0]+" "+level;
     var _tw = textWidth(_t);
     fill(0, 255, 0);
-    text(_t,w/2-_tw/2,h/2-200);
+    text(_t, windowWidth/2-_tw/2, 50);
     
-    textSize(40);
-    noStroke();
+    textSize(20);
+    
     if(pLScore==levelScore){
-        var t = "Congratulations, Kant Win!";
+        var t = names[4];
         var tw = textWidth(t);
         fill(0, 255, 0);
-        text(t,w/2-tw/2,h/2+cos(frameCount/20.0)*20);
+        text(t,windowWidth/2-tw/2,100+cos(frameCount/20.0)*20);
+        pLcomment();
     }
     if(pRScore==levelScore){
-        var t = "You loose, Descartes Win!";
+        var t = names[5];
         var tw = textWidth(t);
         fill(255, 0, 0);
-        text(t,w/2-tw/2,h/2+cos(frameCount/20.0)*20);
+        text(t,windowWidth/2-tw/2,100+cos(frameCount/20.0)*20);
+        pRcomment();
     }
-    textSize(20);
-    var t = "Click to enter for the next level";
+    textSize(12);
+    var t = "Play";
     var tw = textWidth(t);
-    fill(0, 255, 0);
-    text(t,w/2-tw/2,h/2+100);
+    button.position(windowWidth/2-tw/2, windowHeight-100);
+}
+function pLcomment(){
+    textSize(12);
+    fill(255);
+    var width = 300;
+    var t = "<< \n\n"   +kantCom[kantComNum]+"\n\n>>     "+names[1];
+    var tw = width;
+    var th = textWidth(t)/width*12;
+    text(t,windowWidth/2-tw/2, windowHeight/2-th, width, windowHeight);
+}
+function pRcomment(){
+    textSize(12);
+    fill(255);
+    var width = 300;
+    var t = "<< \n\n"   +dekartCom[dekartComNum]+"\n\n>>     "+names[2];
+    var tw = width;
+    var th = textWidth(t)/width*12;
+    text(t,windowWidth/2-tw/2, windowHeight/2-th, width, windowHeight);
 }
 function levelChek(){
     if(pLScore==levelScore || pRScore == levelScore){
@@ -284,7 +303,7 @@ function nextLevel(){
 // ----------------------------------------- Ball
 var Ball = function(_angle, _col){
     this.speed = ballSpeed;
-    this.pos = createVector(w/2, h/2);
+    this.pos = createVector(windowWidth/2, windowHeight/2);
     this.vel = createVector(-this.speed, 0);
     this.col = _col;
     this.angle = _angle;
@@ -300,9 +319,9 @@ Ball.prototype.update = function(){
         this.vel.y *= -1;
         this.pos.y = 0;
     }
-    if(this.pos.y>h){
+    if(this.pos.y>windowHeight){
         this.vel.y *= -1;
-        this.pos.y = h;
+        this.pos.y = windowHeight;
     }
     if(this.pos.x<0){
         pRScore++;
@@ -310,7 +329,7 @@ Ball.prototype.update = function(){
         this.resetLeft();
         loose = true;
     }else{loose = false;}
-    if(this.pos.x>w){
+    if(this.pos.x>windowWidth){
         pLScore++;
         kantComNum = int(random(0, kantCom.length-1));
         this.resetRight();
@@ -355,7 +374,7 @@ Ball.prototype.resetLeft = function(){
 }
 Ball.prototype.reset = function(){
     this.hit = 0;
-    this.pos.set(w/2,h/2);
+    this.pos.set(windowWidth/2,windowHeight/2);
     this.vel = createVector(-this.speed, 0);
 }
 Ball.prototype.intersectL = function(){
@@ -366,7 +385,7 @@ Ball.prototype.intersectL = function(){
     }
 }
 Ball.prototype.intersectR = function(){
-    if(this.pos.y>pRposY && this.pos.y< pRposY+rectsize && this.pos.x>pRposX && this.pos.x<w-10){
+    if(this.pos.y>pRposY && this.pos.y< pRposY+rectsize && this.pos.x>pRposX && this.pos.x<windowWidth-10){
         return true;
     }else{
         return false;
@@ -375,14 +394,14 @@ Ball.prototype.intersectR = function(){
 // ----------------------------------------- Power
 var Power = function() {
     this.speed = ballSpeed;
-    this.pos = createVector(w, random(10, h));
+    this.pos = createVector(windowWidth, random(10, windowHeight));
     this.vel = createVector(-this.speed, 0);
 }
 Power.prototype.update = function(){
     this.pos.add(this.vel);
 }
 Power.prototype.reset = function(){
-    this.pos.set(w,random(10, h-10));
+    this.pos.set(windowWidth,random(10, windowHeight-10));
 }
 Power.prototype.draw = function(){
     noStroke();
