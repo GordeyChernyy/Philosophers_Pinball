@@ -82,7 +82,7 @@ function draw() {
   //    message();
 }
 // ----------------------------------------- Mouse
-function mouseMoved(){
+function mouseDragged(){
     pLposY = mouseY-rectsize/2;
 }
 function mouseClicked(){
