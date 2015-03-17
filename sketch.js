@@ -86,8 +86,8 @@ function draw() {
   //    message();
 }
 // ----------------------------------------- Mouse
-function mouseMoved(){
-    pLposY = mouseY-rectsize/2;
+function touchMoved(){
+    pLposY = touchY-rectsize/2;
 }
 function mouseClicked(){
     if(pause){
