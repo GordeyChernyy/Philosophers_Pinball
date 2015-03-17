@@ -8,11 +8,13 @@
   <!-- uncomment lines below to include extra p5 libraries -->
   <script language="javascript" src="addons/p5.dom.js"></script>
 <script>
-$(document).on("pagecreate","#pageone",function(){
-  $("p").on("swipeleft",function(){
-    alert("You swiped left!");
-  });                       
-});
+$('body').on({
+    'mousewheel': function(e) {
+        if (e.target.id == 'el') return;
+        e.preventDefault();
+        e.stopPropagation();
+    }
+})
 </script>
   <!--<script language="javascript" src="../addons/p5.sound.js"></script>-->
   <script language="javascript" type="text/javascript" src="sketch.js"></script>
