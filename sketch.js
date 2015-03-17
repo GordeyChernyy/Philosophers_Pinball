@@ -52,7 +52,8 @@ function preload() {
 }
 // ----------------------------------------- Setup
 function setup() {
-    createCanvas(w, h);
+    canvas = createCanvas(w, h);
+    canvas.position((windowWidth-w)/2, 50);
     ball2Col = color(0, 255, 0);
     var ballCol = color(255, 255, 255);
     ball = new Ball(0, ballCol);
@@ -63,6 +64,9 @@ function setup() {
     pReyeR = new Eye();
     dualism = new Power();
 
+}
+function windowResized(){
+    canvas.position((windowWidth-w)/2, 50);
 }
 // ----------------------------------------- Draw
 function draw() {
@@ -82,7 +86,7 @@ function draw() {
   //    message();
 }
 // ----------------------------------------- Mouse
-function mouseDragged(){
+function mouseMoved(){
     pLposY = mouseY-rectsize/2;
 }
 function mouseClicked(){
@@ -331,7 +335,7 @@ Ball.prototype.update = function(){
         this.angle = map(intersect,0,rectsize,this.angleRange,-this.angleRange);
         this.anglerad = radians(this.angle);
         this.vel.rotate(this.anglerad);
-        this.pos.add(vel);
+        this.pos.add(this.vel);
     }
 }
 Ball.prototype.draw = function(){
