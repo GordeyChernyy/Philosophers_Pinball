@@ -74,6 +74,8 @@ function setup() {
 }
 function windowResized(){
     canvas = createCanvas(windowWidth, windowHeight);
+    button.remove();
+    button = createButton('play');
     button.mousePressed(play);
 }
 // ----------------------------------------- Draw
