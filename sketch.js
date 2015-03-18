@@ -1,7 +1,7 @@
 var windowWidth = 1000;
 var windowHeight = 600;
 var levelMin = 0.02;
-var levelMax = 0.2; // optimal 0.02 0.2
+var levelMax = 0.05; // optimal 0.02 0.2
 var level = 0;
 var levelScore = 1;
 
@@ -71,6 +71,7 @@ function setup() {
     dualism = new Power();
     button = createButton('play');
     button.mousePressed(play);
+    frameRate(60);
 }
 function windowResized(){
     canvas = createCanvas(windowWidth, windowHeight);
@@ -296,6 +297,8 @@ function levelChek(){
 function nextLevel(){
     ball.reset();
     ball2.reset();
+    showBall2 = false;
+    showDualism = false;
     pause = false;
     levelMax += 0.05;
     level++;
@@ -404,12 +407,13 @@ Power.prototype.update = function(){
 }
 Power.prototype.reset = function(){
     this.pos.set(windowWidth,random(10, windowHeight-10));
+    this.vel = createVector(-this.speed, 0);
 }
 Power.prototype.draw = function(){
     noStroke();
     fill(ball2Col);
     textSize(20);
-    text("dualizm",this.pos.x,this.pos.y);
+    text(names[6],this.pos.x,this.pos.y);
 }
 Power.prototype.isDead = function(){
     if(this.pos.x<0){
