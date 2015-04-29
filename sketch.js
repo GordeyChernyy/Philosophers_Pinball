@@ -81,7 +81,6 @@ function windowResized(){
 }
 // ----------------------------------------- Draw
 function draw() {
-    
     background(0);
     if(!pause){
         ball.update();
@@ -436,7 +435,7 @@ var Eye = function() {
     this.size = 13;
     this.angle = 0.0;
 }
-Eye.prototype.update = function(my, mx){
+Eye.prototype.update = function(mx, my){
     this.angle = atan2(my-this.y, mx-this.x);
 }
 Eye.prototype.display = function(){
