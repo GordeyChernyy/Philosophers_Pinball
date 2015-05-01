@@ -7,22 +7,18 @@
 	<key>IDESourceControlProjectIdentifier</key>
 	<string>E92EA045-6950-4561-9AFA-00155FBAC851</string>
 	<key>IDESourceControlProjectName</key>
-	<string>PhilosophyPinball</string>
+	<string>project</string>
 	<key>IDESourceControlProjectOriginsDictionary</key>
 	<dict>
 		<key>471014AAAB294CD5190D023D7C78C677DD89958B</key>
 		<string>https://github.com/GordeyChernyy/Philosophers_Pinball.git</string>
-		<key>F64C0D940D1F9AA3993E1BAE7330EF88ACBF0396</key>
-		<string>https://github.com/processing/p5.js.git</string>
 	</dict>
 	<key>IDESourceControlProjectPath</key>
-	<string>PhilosophyPinball.xcodeproj</string>
+	<string>PhilosophyPinball.xcodeproj/project.xcworkspace</string>
 	<key>IDESourceControlProjectRelativeInstallPathDictionary</key>
 	<dict>
 		<key>471014AAAB294CD5190D023D7C78C677DD89958B</key>
 		<string>../..</string>
-		<key>F64C0D940D1F9AA3993E1BAE7330EF88ACBF0396</key>
-		<string>../../../p5.js</string>
 	</dict>
 	<key>IDESourceControlProjectURL</key>
 	<string>https://github.com/GordeyChernyy/Philosophers_Pinball.git</string>
@@ -32,14 +28,6 @@
 	<string>471014AAAB294CD5190D023D7C78C677DD89958B</string>
 	<key>IDESourceControlProjectWCConfigurations</key>
 	<array>
-		<dict>
-			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>
-			<string>public.vcs.git</string>
-			<key>IDESourceControlWCCIdentifierKey</key>
-			<string>F64C0D940D1F9AA3993E1BAE7330EF88ACBF0396</string>
-			<key>IDESourceControlWCCName</key>
-			<string>p5.js</string>
-		</dict>
 		<dict>
 			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>
 			<string>public.vcs.git</string>

@@ -45,12 +45,19 @@ var kant, kantPlain,  kantSad, kantHappy,
 dekart;
 
 var button;
+
+var sMusic;
+var sBall;
+var sLoose;
+var sWin;
 // ----------------------------------------- Preload
 function preload() {
-    kantPlain = loadImage("images/kant.png");
-    kantSad = loadImage("images/kant_sad.png");
-    kantHappy = loadImage("images/kant_happy.png");
-    dekart = loadImage("images/dekart.png");
+    soundFormats('ogg', 'mp3');
+
+    kantPlain = loadImage('images/kant.png');
+    kantSad = loadImage('images/kant_sad.png');
+    kantHappy = loadImage('images/kant_happy.png');
+    dekart = loadImage('images/dekart.png');
     kantCom = loadStrings('kant.txt');
     dekartCom = loadStrings('dekart.txt');
     names = loadStrings('names.txt');
@@ -60,6 +67,7 @@ function preload() {
 function setup() {
     canvas = createCanvas(windowWidth, windowHeight);
     canvas.position(0, 0);
+    sMusic = loadSound('sounds/music.mp3');
     ball2Col = color(0, 255, 0);
     var ballCol = color(255, 255, 255);
     ball = new Ball(0, ballCol);
@@ -72,6 +80,7 @@ function setup() {
     button = createButton('play');
     button.mousePressed(play);
     frameRate(60);
+    sMusic.play();
 }
 function windowResized(){
     canvas = createCanvas(windowWidth, windowHeight);
@@ -105,6 +114,7 @@ function mouseClicked(){
 // ----------------------------------------- Function
 function play(){
     if(pause){
+        sMusic.play();
         nextLevel();
         button.position(-200, -200);
     }
@@ -242,6 +252,7 @@ function score(){
     text(info,windowWidth/2-tw/2,30);
 }
 function pauseGame(){
+    if(sMusic.isPlaying){sMusic.stop();}
     noStroke();
     textSize(15);
     var _t = names[0]+" "+level;
@@ -269,6 +280,7 @@ function pauseGame(){
     var t = "Play";
     var tw = textWidth(t);
     button.position(windowWidth/2-tw/2, windowHeight-100);
+    
 }
 function pLcomment(){
     textSize(12);
