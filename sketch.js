@@ -53,7 +53,7 @@ var sWin;
 // ----------------------------------------- Preload
 function preload() {
     soundFormats('ogg', 'mp3');
-
+    sMusic = loadSound('sounds/music.mp3');
     kantPlain = loadImage('images/kant.png');
     kantSad = loadImage('images/kant_sad.png');
     kantHappy = loadImage('images/kant_happy.png');
@@ -67,7 +67,6 @@ function preload() {
 function setup() {
     canvas = createCanvas(windowWidth, windowHeight);
     canvas.position(0, 0);
-    sMusic = loadSound('sounds/music.mp3');
     ball2Col = color(0, 255, 0);
     var ballCol = color(255, 255, 255);
     ball = new Ball(0, ballCol);
