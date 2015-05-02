@@ -55,6 +55,10 @@ var sDual;
 var sPLoose;
 var sPWin;
 var playOnce;
+
+var stars = [];
+var starsCount = 40;
+
 // ----------------------------------------- Preload
 function preload() {
     sMusic = loadSound('sounds/music.mp3');
@@ -92,6 +96,7 @@ function setup() {
     frameRate(60);
     sMusic.play();
     playOnce = true;
+    createStars();
 }
 function windowResized(){
     canvas = createCanvas(windowWidth, windowHeight);
@@ -103,6 +108,7 @@ function windowResized(){
 function draw() {
     background(0);
     if(!pause){
+        drawStars();
         if(!sMusic.isPlaying()){sMusic.play();}
         ball.update();
         ball.draw();
@@ -336,6 +342,29 @@ function nextLevel(){
     }
     pLScore = 0;
     pRScore = 0;
+}
+function createStars(){
+    for(var i = 0; i < starsCount; i++ ){
+        stars[i] = new Star();
+    }
+}
+function drawStars(){
+    for(var i = 0; i < starsCount; i++ ){
+        stars[i].draw();
+    }
+}
+// ----------------------------------------- Star
+var Star = function(){
+    this.speed = random(0.1, 0.3);
+    this.pos = createVector(random(windowWidth), random(windowHeight));
+    this.size = random(2, 10);
+    this.opacity = random(20, 255);
+}
+Star.prototype.draw = function(){
+    noStroke();
+    fill(255, this.opacity);
+    var s = this.size*(cos(frameCount*this.speed)*0.5+0.5);
+    ellipse(this.pos.x, this.pos.y, s,s);
 }
 // ----------------------------------------- Ball
 var Ball = function(_angle, _col){
