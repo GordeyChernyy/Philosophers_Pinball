@@ -12,6 +12,7 @@ var pLeyeL, pLeyeR, pReyeL, pReyeR;
 var showBall2 = false;
 var ball2Col;
 
+var imgDualism;
 var showDualism = false;
 var dualismLifetime = 500;
 var dualismLife = 0;
@@ -76,6 +77,7 @@ function preload() {
     kantCom = loadStrings('kant.txt');
     dekartCom = loadStrings('dekart.txt');
     names = loadStrings('names.txt');
+    imgDualism = loadImage('images/dualizm.png');
     
 }
 // ----------------------------------------- Setup
@@ -94,9 +96,11 @@ function setup() {
     button = createButton('play');
     button.mousePressed(play);
     frameRate(60);
-    sMusic.play();
     playOnce = true;
     createStars();
+    sMusic.play();
+    sMusic.loop();
+    sMusic.playMode('restart');
 }
 function windowResized(){
     canvas = createCanvas(windowWidth, windowHeight);
@@ -109,7 +113,6 @@ function draw() {
     background(0);
     if(!pause){
         drawStars();
-        if(!sMusic.isPlaying()){sMusic.play();}
         ball.update();
         ball.draw();
         pLeft();
@@ -119,7 +122,6 @@ function draw() {
         levelChek();
     }else{
         pauseGame();
-        if(sMusic.isPlaying()){sMusic.pause();}
     }
   //    message();
 }
@@ -133,7 +135,6 @@ function mouseClicked(){
 // ----------------------------------------- Function
 function play(){
     if(pause){
-        if(!sMusic.isPlaying()){sMusic.play();}
         playOnce = true;
         nextLevel();
         button.position(-200, -200);
@@ -355,7 +356,7 @@ function drawStars(){
 }
 // ----------------------------------------- Star
 var Star = function(){
-    this.speed = random(0.1, 0.3);
+    this.speed = random(0.05, 0.12);
     this.pos = createVector(random(windowWidth), random(windowHeight));
     this.size = random(2, 10);
     this.opacity = random(20, 255);
@@ -363,7 +364,7 @@ var Star = function(){
 Star.prototype.draw = function(){
     noStroke();
     fill(255, this.opacity);
-    var s = this.size*(cos(frameCount*this.speed)*0.5+0.5);
+    var s = this.size*(cos(frameCount*this.speed)*0.5+0.7);
     ellipse(this.pos.x, this.pos.y, s,s);
 }
 // ----------------------------------------- Ball
@@ -480,10 +481,7 @@ Power.prototype.reset = function(){
     this.vel = createVector(-this.speed, 0);
 }
 Power.prototype.draw = function(){
-    noStroke();
-    fill(ball2Col);
-    textSize(20);
-    text(names[6],this.pos.x,this.pos.y);
+    image(imgDualism,this.pos.x,this.pos.y);
 }
 Power.prototype.isDead = function(){
     if(this.pos.x<0){
