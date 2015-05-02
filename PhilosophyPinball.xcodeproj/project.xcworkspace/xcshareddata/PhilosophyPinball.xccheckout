@@ -7,14 +7,14 @@
 	<key>IDESourceControlProjectIdentifier</key>
 	<string>E92EA045-6950-4561-9AFA-00155FBAC851</string>
 	<key>IDESourceControlProjectName</key>
-	<string>project</string>
+	<string>PhilosophyPinball</string>
 	<key>IDESourceControlProjectOriginsDictionary</key>
 	<dict>
 		<key>471014AAAB294CD5190D023D7C78C677DD89958B</key>
 		<string>https://github.com/GordeyChernyy/Philosophers_Pinball.git</string>
 	</dict>
 	<key>IDESourceControlProjectPath</key>
-	<string>PhilosophyPinball.xcodeproj/project.xcworkspace</string>
+	<string>PhilosophyPinball.xcodeproj</string>
 	<key>IDESourceControlProjectRelativeInstallPathDictionary</key>
 	<dict>
 		<key>471014AAAB294CD5190D023D7C78C677DD89958B</key>

@@ -47,13 +47,24 @@ dekart;
 var button;
 
 var sMusic;
-var sBall;
+var sBallHit;
+var sBallTable;
 var sLoose;
 var sWin;
+var sDual;
+var sPLoose;
+var sPWin;
+var playOnce;
 // ----------------------------------------- Preload
 function preload() {
-    soundFormats('ogg', 'mp3');
     sMusic = loadSound('sounds/music.mp3');
+    sBallTable = loadSound('sounds/ballTable.mp3');
+    sBallHit = loadSound('sounds/ballHit.mp3');
+    sLoose = loadSound('sounds/loose.mp3');
+    sPLoose = loadSound('sounds/pLoose.mp3');
+    sPWin = loadSound('sounds/pWin.mp3');
+    sDual = loadSound('sounds/dual.mp3');
+    sWin = loadSound('sounds/win.mp3');
     kantPlain = loadImage('images/kant.png');
     kantSad = loadImage('images/kant_sad.png');
     kantHappy = loadImage('images/kant_happy.png');
@@ -80,6 +91,7 @@ function setup() {
     button.mousePressed(play);
     frameRate(60);
     sMusic.play();
+    playOnce = true;
 }
 function windowResized(){
     canvas = createCanvas(windowWidth, windowHeight);
@@ -91,6 +103,7 @@ function windowResized(){
 function draw() {
     background(0);
     if(!pause){
+        if(!sMusic.isPlaying()){sMusic.play();}
         ball.update();
         ball.draw();
         pLeft();
@@ -100,6 +113,7 @@ function draw() {
         levelChek();
     }else{
         pauseGame();
+        if(sMusic.isPlaying()){sMusic.pause();}
     }
   //    message();
 }
@@ -113,7 +127,8 @@ function mouseClicked(){
 // ----------------------------------------- Function
 function play(){
     if(pause){
-        sMusic.play();
+        if(!sMusic.isPlaying()){sMusic.play();}
+        playOnce = true;
         nextLevel();
         button.position(-200, -200);
     }
@@ -223,6 +238,7 @@ function dualball(){
         showDualism = false;
         dualism.reset();
         dualismInt = int(random(dualismIntMin,dualismIntMax));
+        sDual.play();
     }
     if(showBall2){
         ball2.update();
@@ -251,22 +267,23 @@ function score(){
     text(info,windowWidth/2-tw/2,30);
 }
 function pauseGame(){
-    if(sMusic.isPlaying){sMusic.stop();}
     noStroke();
     textSize(15);
     var _t = names[0]+" "+level;
     var _tw = textWidth(_t);
     fill(0, 255, 0);
     text(_t, windowWidth/2-_tw/2, 50);
-    
     textSize(20);
-    
     if(pLScore==levelScore){
         var t = names[4];
         var tw = textWidth(t);
         fill(0, 255, 0);
         text(t,windowWidth/2-tw/2,100+cos(frameCount/20.0)*20);
         pLcomment();
+        if(playOnce){
+            sWin.play();
+            playOnce = false;
+        }
     }
     if(pRScore==levelScore){
         var t = names[5];
@@ -274,12 +291,15 @@ function pauseGame(){
         fill(255, 0, 0);
         text(t,windowWidth/2-tw/2,100+cos(frameCount/20.0)*20);
         pRcomment();
+        if(playOnce){
+            sLoose.play();
+            playOnce = false;
+        }
     }
     textSize(12);
-    var t = "Play";
+    var t = 'Play';
     var tw = textWidth(t);
     button.position(windowWidth/2-tw/2, windowHeight-100);
-    
 }
 function pLcomment(){
     textSize(12);
@@ -310,8 +330,10 @@ function nextLevel(){
     showBall2 = false;
     showDualism = false;
     pause = false;
-    levelMax += 0.05;
-    level++;
+    if(pLScore==levelScore){
+        levelMax += 0.05;
+        level++;
+    }
     pLScore = 0;
     pRScore = 0;
 }
@@ -330,27 +352,34 @@ var Ball = function(_angle, _col){
 }
 Ball.prototype.update = function(){
     this.pos.add(this.vel);
-    if(this.pos.y<0){
+    if(this.pos.y<0){ // wall hit
         this.vel.y *= -1;
         this.pos.y = 0;
+        sBallTable.play();
     }
-    if(this.pos.y>windowHeight){
+    if(this.pos.y>windowHeight){ // wall hit
         this.vel.y *= -1;
         this.pos.y = windowHeight;
+        sBallTable.play();
     }
-    if(this.pos.x<0){
+    if(this.pos.x<0){ // player Right loose
         pRScore++;
         dekartComNum = int(random(0, dekartCom.length-1));
         this.resetLeft();
         loose = true;
-    }else{loose = false;}
-    if(this.pos.x>windowWidth){
+        sPLoose.play();
+    }else{
+        loose = false;
+    }
+    if(this.pos.x>windowWidth){  // player Left loose
         pLScore++;
         kantComNum = int(random(0, kantCom.length-1));
         this.resetRight();
         win = true;
-    }else{win = false;}
-    
+        sPWin.play();
+    }else{
+        win = false;
+    }
     if(this.intersectL()){
         this.hit = 0;
         this.intersect = this.pos.y - pLposY;
@@ -360,6 +389,7 @@ Ball.prototype.update = function(){
         this.anglerad = radians(this.angle);
         this.vel.rotate(this.anglerad);
         this.pos.add(this.vel);
+        sBallHit.play();
     }
     if(this.intersectR()){
         this.hit = 0;
@@ -370,6 +400,7 @@ Ball.prototype.update = function(){
         this.anglerad = radians(this.angle);
         this.vel.rotate(this.anglerad);
         this.pos.add(this.vel);
+        sBallHit.play();
     }
 }
 Ball.prototype.draw = function(){
