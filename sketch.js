@@ -3,7 +3,7 @@ var windowHeight = 600;
 var levelMin = 0.02;
 var levelMax = 0.05; // optimal 0.02 0.2
 var level = 1;
-var levelScore = 1;
+var levelScore = 3;
 var allScore = 0;
 var canvas;
 
@@ -115,13 +115,8 @@ function setup() {
 
 }
 function windowResized(){
-
-    canvas = createCanvas(windowWidth, windowHeight);
-    button.remove();
-    button = createButton('play');
-    button.mousePressed(play);
+    resizeCanvas(windowWidth, windowHeight);
     createStars();
-    fbshare.show();
 }
 // ----------------------------------------- Draw
 function draw() {
@@ -151,7 +146,6 @@ function draw() {
 }
 // ----------------------------------------- Mouse
 function touchMoved(){
-    
     pLposY = touchY-rectsize/2;
 }
 function mouseClicked(){
@@ -168,10 +162,12 @@ function play(){
         level = 1;
         pLScore = 0;
         pRScore = 0;
+        allScore = 0;
         playOnce = true;
         button.position(-200, -200);
         ballDelay = 60;
         pause = false;
+        fbshare.hide();
     }
 }
 function message(){
@@ -296,7 +292,7 @@ function dualball(){
 function score(){
     textSize(15);
     var info = names[0]+" "+level+"  |  "+names[1]+" "+pLScore+"  |  "+names[2]+" "+pRScore+"\n"+
-               "score:"+allScore;
+               "score: "+allScore;
     if(showBall2){
         var t = names[3];
         text(t,30,30);
