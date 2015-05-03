@@ -2,8 +2,10 @@ var windowWidth = 1000;
 var windowHeight = 600;
 var levelMin = 0.02;
 var levelMax = 0.05; // optimal 0.02 0.2
-var level = 0;
+var level = 1;
 var levelScore = 1;
+var allScore = 0;
+var canvas;
 
 var ball, ball2;
 var ballSpeed = 10;
@@ -13,6 +15,8 @@ var showBall2 = false;
 var ball2Col;
 
 var imgDualism;
+var colDualism;
+var ballDelay = 60;
 var showDualism = false;
 var dualismLifetime = 500;
 var dualismLife = 0;
@@ -46,6 +50,9 @@ var kant, kantPlain,  kantSad, kantHappy,
 dekart;
 
 var button;
+var fbshare;
+var twitter;
+var myDiv;
 
 var sMusic;
 var sBallHit;
@@ -62,6 +69,8 @@ var starsCount = 40;
 
 // ----------------------------------------- Preload
 function preload() {
+    fbshare = createElement('div', '<div class="fb-share-button" data-href="http://gordeychernyy.github.io/Philosophers_Pinball/" data-layout="button_count"></div>');
+
     sMusic = loadSound('sounds/music.mp3');
     sBallTable = loadSound('sounds/ballTable.mp3');
     sBallHit = loadSound('sounds/ballHit.mp3');
@@ -78,13 +87,15 @@ function preload() {
     dekartCom = loadStrings('dekart.txt');
     names = loadStrings('names.txt');
     imgDualism = loadImage('images/dualizm.png');
-    
 }
 // ----------------------------------------- Setup
 function setup() {
     canvas = createCanvas(windowWidth, windowHeight);
+    canvas.parent('myContainer');
     canvas.position(0, 0);
-    ball2Col = color(0, 255, 0);
+    fbshare.hide();
+    colDualism = color(246, 206, 53)
+    ball2Col = colDualism;
     var ballCol = color(255, 255, 255);
     ball = new Ball(0, ballCol);
     ball2 = new Ball(0, ball2Col);
@@ -101,25 +112,38 @@ function setup() {
     sMusic.play();
     sMusic.loop();
     sMusic.playMode('restart');
+
 }
 function windowResized(){
+
     canvas = createCanvas(windowWidth, windowHeight);
     button.remove();
     button = createButton('play');
     button.mousePressed(play);
+    createStars();
+    fbshare.show();
 }
 // ----------------------------------------- Draw
 function draw() {
     background(0);
     if(!pause){
         drawStars();
-        ball.update();
+        if(ballDelay==0){
+            ball.update();
+        }
         ball.draw();
         pLeft();
         pRight();
         dualball();
         score();
         levelChek();
+        if(ballDelay>0){
+            ballDelay--;
+            noStroke();
+            fill(255);
+            textSize(20);
+            text(int(ballDelay/8), windowWidth/2, windowHeight/2-20);
+        }
     }else{
         pauseGame();
     }
@@ -127,6 +151,7 @@ function draw() {
 }
 // ----------------------------------------- Mouse
 function touchMoved(){
+    
     pLposY = touchY-rectsize/2;
 }
 function mouseClicked(){
@@ -135,15 +160,24 @@ function mouseClicked(){
 // ----------------------------------------- Function
 function play(){
     if(pause){
+        levelMax = 0.05;
+        showDualism = false;
+        showBall2 = false;
+        ball2.reset();
+        ball.reset();
+        level = 1;
+        pLScore = 0;
+        pRScore = 0;
         playOnce = true;
-        nextLevel();
         button.position(-200, -200);
+        ballDelay = 60;
+        pause = false;
     }
 }
 function message(){
     noStroke();
     textSize(22);
-    fill(255);
+    fill(colDualism);
     m =
         "dualismLife ="+dualismLife+"\n"+
         "dualismLifetime = "+dualismLifetime;
@@ -261,8 +295,8 @@ function dualball(){
 }
 function score(){
     textSize(15);
-    var info = names[0]+" "+level+"  |  "+names[1]+" "+pLScore+"  |  "+names[2]+" "+pRScore;
-    var tw = textWidth(info);
+    var info = names[0]+" "+level+"  |  "+names[1]+" "+pLScore+"  |  "+names[2]+" "+pRScore+"\n"+
+               "score:"+allScore;
     if(showBall2){
         var t = names[3];
         text(t,30,30);
@@ -271,21 +305,24 @@ function score(){
     }
     noStroke();
     fill(255);
-    text(info,windowWidth/2-tw/2,30);
+    textAlign(CENTER);
+    text(info,windowWidth/2,30);
 }
 function pauseGame(){
     noStroke();
-    textSize(15);
-    var _t = names[0]+" "+level;
-    var _tw = textWidth(_t);
-    fill(0, 255, 0);
-    text(_t, windowWidth/2-_tw/2, 50);
-    textSize(20);
-    if(pLScore==levelScore){
+    textSize(30);
+    textAlign(CENTER);
+    fill(colDualism);
+    var txScore = 'your score is: '+allScore;
+    var txScoreW = textWidth(txScore);
+    text(txScore, windowWidth/2, 50);
+    if(level==6){
         var t = names[4];
-        var tw = textWidth(t);
+        textSize(20);
+        textAlign(CENTER);
         fill(0, 255, 0);
-        text(t,windowWidth/2-tw/2,100+cos(frameCount/20.0)*20);
+        text(t, windowWidth/2, 120+cos(frameCount/20.0)*20);
+        textAlign(LEFT);
         pLcomment();
         if(playOnce){
             sWin.play();
@@ -294,9 +331,11 @@ function pauseGame(){
     }
     if(pRScore==levelScore){
         var t = names[5];
-        var tw = textWidth(t);
+        textAlign(CENTER);
+        textSize(20);
         fill(255, 0, 0);
-        text(t,windowWidth/2-tw/2,100+cos(frameCount/20.0)*20);
+        text(t,windowWidth/2,100+cos(frameCount/20.0)*20);
+        textAlign(LEFT);
         pRcomment();
         if(playOnce){
             sLoose.play();
@@ -304,9 +343,11 @@ function pauseGame(){
         }
     }
     textSize(12);
-    var t = 'Play';
+    var t = 'Play again';
     var tw = textWidth(t);
     button.position(windowWidth/2-tw/2, windowHeight-100);
+    fbshare.position(windowWidth/2+txScoreW/2+20, 30);
+    fbshare.show();
 }
 function pLcomment(){
     textSize(12);
@@ -327,22 +368,19 @@ function pRcomment(){
     text(t,windowWidth/2-tw/2, windowHeight/2-th, width, windowHeight);
 }
 function levelChek(){
-    if(pLScore==levelScore || pRScore == levelScore){
+    if(pRScore == levelScore || level == 6){
         pause = true;
+    }
+    if(pLScore%levelScore==0){
+        nextLevel();
     }
 }
 function nextLevel(){
-    ball.reset();
-    ball2.reset();
-    showBall2 = false;
-    showDualism = false;
-    pause = false;
     if(pLScore==levelScore){
         levelMax += 0.05;
         level++;
     }
     pLScore = 0;
-    pRScore = 0;
 }
 function createStars(){
     for(var i = 0; i < starsCount; i++ ){
@@ -358,7 +396,7 @@ function drawStars(){
 var Star = function(){
     this.speed = random(0.05, 0.12);
     this.pos = createVector(random(windowWidth), random(windowHeight));
-    this.size = random(2, 10);
+    this.size = random(2, 6);
     this.opacity = random(20, 255);
 }
 Star.prototype.draw = function(){
@@ -420,6 +458,7 @@ Ball.prototype.update = function(){
         this.vel.rotate(this.anglerad);
         this.pos.add(this.vel);
         sBallHit.play();
+        allScore += int(1*level);
     }
     if(this.intersectR()){
         this.hit = 0;
