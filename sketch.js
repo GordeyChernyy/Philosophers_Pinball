@@ -69,7 +69,6 @@ var starsCount = 40;
 
 // ----------------------------------------- Preload
 function preload() {
-    fbshare = createElement('div', '<div class="fb-share-button" data-href="http://gordeychernyy.github.io/Philosophers_Pinball/" data-layout="button_count"></div>');
 
     sMusic = loadSound('sounds/music.mp3');
     sBallTable = loadSound('sounds/ballTable.mp3');
@@ -91,6 +90,8 @@ function preload() {
 // ----------------------------------------- Setup
 function setup() {
     canvas = createCanvas(windowWidth, windowHeight);
+    fbshare = createElement('div', '<div class="fb-share-button" data-href="http://gordeychernyy.github.io/Philosophers_Pinball/" data-layout="button_count"></div>');
+
     canvas.parent('myContainer');
     canvas.position(0, 0);
     fbshare.hide();
