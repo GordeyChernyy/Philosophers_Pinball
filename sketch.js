@@ -93,7 +93,7 @@ function setup() {
     canvas.parent('myContainer');
     canvas.position(0, 0);
     fbshare.hide();
-    colDualism = color(246, 206, 53)
+    colDualism = color(246, 206, 53);
     ball2Col = colDualism;
     var ballCol = color(255, 255, 255);
     ball = new Ball(0, ballCol);
@@ -122,7 +122,7 @@ function draw() {
     background(0);
     if(!pause){
         drawStars();
-        if(ballDelay==0){
+        if(ballDelay===0){
             ball.update();
         }
         ball.draw();
@@ -256,7 +256,7 @@ function pRface(){
     pop();
 }
 function dualball(){
-    if(frameCount%dualismInt == 0 && !showDualism && !showBall2){
+    if(frameCount%dualismInt === 0 && !showDualism && !showBall2){
         showDualism = true;
     }
     if(dualism.isDead()){
@@ -312,11 +312,10 @@ function pauseGame(){
     var txScoreW = textWidth(txScore);
     text(txScore, windowWidth/2, 50);
     if(level==6){
-        var t = names[4];
         textSize(20);
         textAlign(CENTER);
         fill(0, 255, 0);
-        text(t, windowWidth/2, 120+cos(frameCount/20.0)*20);
+        text(names[4], windowWidth/2, 120+cos(frameCount/20.0)*20);
         textAlign(LEFT);
         pLcomment();
         if(playOnce){
@@ -338,8 +337,7 @@ function pauseGame(){
         }
     }
     textSize(12);
-    var t = 'Play again';
-    var tw = textWidth(t);
+    var tw = textWidth('Play again');
     button.position(windowWidth/2-tw/2, windowHeight-100);
     fbshare.position(windowWidth/2+txScoreW/2+20, 30);
     fbshare.show();
@@ -366,7 +364,7 @@ function levelChek(){
     if(pRScore == levelScore || level == 6){
         pause = true;
     }
-    if(pLScore%levelScore==0){
+    if(pLScore%levelScore===0){
         nextLevel();
     }
 }
@@ -393,13 +391,13 @@ var Star = function(){
     this.pos = createVector(random(windowWidth), random(windowHeight));
     this.size = random(2, 6);
     this.opacity = random(20, 255);
-}
+};
 Star.prototype.draw = function(){
     noStroke();
     fill(255, this.opacity);
     var s = this.size*(cos(frameCount*this.speed)*0.5+0.7);
     ellipse(this.pos.x, this.pos.y, s,s);
-}
+};
 // ----------------------------------------- Ball
 var Ball = function(_angle, _col){
     this.speed = ballSpeed;
@@ -409,10 +407,10 @@ var Ball = function(_angle, _col){
     this.angle = _angle;
     this.vel.rotate(this.angle);
     this.angleRange = 65;
-    this.score1;
-    this.score2;
+    this.score1 = 0;
+    this.score2 = 0;
     this.hit = 0;
-}
+};
 Ball.prototype.update = function(){
     this.pos.add(this.vel);
     if(this.pos.y<0){ // wall hit
@@ -466,81 +464,81 @@ Ball.prototype.update = function(){
         this.pos.add(this.vel);
         sBallHit.play();
     }
-}
+};
 Ball.prototype.draw = function(){
     noStroke();
     fill(this.col);
     ellipse(this.pos.x,this.pos.y, 12, 12);
-}
+};
 Ball.prototype.resetRight = function(){
     this.pos.set(pLposX,pLposY+rectsize/2);
     this.vel = createVector(this.speed, 0);
     this.vel.rotate(random(-1,1));
-}
+};
 Ball.prototype.resetLeft = function(){
     this.pos.set(pRposX,pRposY+rectsize/2);
     this.vel = createVector(-this.speed, 0);
     this.vel.rotate(random(-1,1));
-}
+};
 Ball.prototype.reset = function(){
     this.hit = 0;
     this.pos.set(windowWidth/2,windowHeight/2);
     this.vel = createVector(-this.speed, 0);
-}
+};
 Ball.prototype.intersectL = function(){
     if(this.pos.y>pLposY && this.pos.y< pLposY+rectsize && this.pos.x<pLposX && this.pos.x>10){
         return true;
     }else{
         return false;
     }
-}
+};
 Ball.prototype.intersectR = function(){
     if(this.pos.y>pRposY && this.pos.y< pRposY+rectsize && this.pos.x>pRposX && this.pos.x<windowWidth-10){
         return true;
     }else{
         return false;
     }
-}
+};
 // ----------------------------------------- Power
 var Power = function() {
     this.speed = ballSpeed;
     this.pos = createVector(windowWidth, random(10, windowHeight));
     this.vel = createVector(-this.speed, 0);
-}
+};
 Power.prototype.update = function(){
     this.pos.add(this.vel);
-}
+};
 Power.prototype.reset = function(){
     this.pos.set(windowWidth,random(10, windowHeight-10));
     this.vel = createVector(-this.speed, 0);
-}
+};
 Power.prototype.draw = function(){
     image(imgDualism,this.pos.x,this.pos.y);
-}
+};
 Power.prototype.isDead = function(){
     if(this.pos.x<0){
         return true;
     }else{
         return false;
     }
-}
+};
 Power.prototype.intersect = function(){
     if(this.pos.y>pLposY && this.pos.y< pLposY+rectsize && this.pos.x<pLposX && this.pos.x>10){
         return true;
     }else{
         return false;
     }
-}
+};
 // ----------------------------------------- Eye
 var Eye = function() {
     this.x = 0;
     this.y = 0;
     this.size = 13;
     this.angle = 0.0;
-}
+};
 Eye.prototype.update = function(mx, my){
     this.angle = atan2(my-this.y, mx-this.x);
-}
+};
 Eye.prototype.display = function(){
     push();
     translate(this.x, this.y);
@@ -560,4 +558,4 @@ Eye.prototype.display = function(){
     fill(255, 100);
     ellipse(this.size/pos2, 0, this.size/_x2, this.size/_x2);
     pop();
-}
+};
