@@ -145,7 +145,7 @@ function draw() {
 }
 // ----------------------------------------- Mouse
 function touchMoved(){
-    pLposY = touchY-rectsize/2;
+    pLposY = mouseY-rectsize/2;
 }
 function mouseClicked(){
     
