@@ -130,7 +130,7 @@ function draw() {
         pRight();
         dualball();
         score();
-        levelChek();
+        levelCheck();
         if(ballDelay>0){
             ballDelay--;
             noStroke();
@@ -360,7 +360,7 @@ function pRcomment(){
     var th = textWidth(t)/width*12;
     text(t,windowWidth/2-tw/2, windowHeight/2-th, width, windowHeight);
 }
-function levelChek(){
+function levelCheck(){
     if(pRScore == levelScore || level == 6){
         pause = true;
     }
