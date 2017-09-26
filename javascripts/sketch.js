@@ -71,7 +71,7 @@ var deltaTime = 0.0;
 
 // ----------------------------------------- Preload
 function preload() {
-    var rootpath = 'https://github.com/GordeyChernyy/Philosophers_Pinball/'
+    var rootpath = 'Philosophers_Pinball/'
     fbshare = createElement('div', '<div class="fb-share-button" data-href="http://gordeychernyy.github.io/Philosophers_Pinball/" data-layout="button_count"></div>');
     sMusic = loadSound(rootpath+'Assets/sounds/music.mp3');
     sBallTable = loadSound(rootpath+'Assets/sounds/ballTable.mp3');
