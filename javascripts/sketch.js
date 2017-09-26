@@ -72,22 +72,25 @@ var deltaTime = 0.0;
 // ----------------------------------------- Preload
 function preload() {
     fbshare = createElement('div', '<div class="fb-share-button" data-href="http://gordeychernyy.github.io/Philosophers_Pinball/" data-layout="button_count"></div>');
-    sMusic = loadSound('../Assets/sounds/music.mp3');
-    sBallTable = loadSound('../Assets/sounds/ballTable.mp3');
-    sBallHit = loadSound('../Assets/sounds/ballHit.mp3');
-    sLoose = loadSound('../Assets/sounds/loose.mp3');
-    sPLoose = loadSound('../Assets/sounds/pLoose.mp3');
-    sPWin = loadSound('../Assets/sounds/pWin.mp3');
-    sDual = loadSound('../Assets/sounds/dual.mp3');
-    sWin = loadSound('../Assets/sounds/win.mp3');
-    kantPlain = loadImage('../Assets/images/kant.png');
-    kantSad = loadImage('../Assets/images/kant_sad.png');
-    kantHappy = loadImage('../Assets/images/kant_happy.png');
-    dekart = loadImage('../Assets/images/dekart.png');
-    kantCom = loadStrings('../Assets/text/kant.txt');
-    dekartCom = loadStrings('../Assets/text/dekart.txt');
-    names = loadStrings('../Assets/text/names.txt');
-    imgDualism = loadImage('../Assets/images/dualizm.png');
+    sMusic = loadSound('Assets/sounds/music.mp3');
+    sBallTable = loadSound('Assets/sounds/ballTable.mp3');
+    sBallHit = loadSound('Assets/sounds/ballHit.mp3');
+    sLoose = loadSound('Assets/sounds/loose.mp3');
+    sPLoose = loadSound('Assets/sounds/pLoose.mp3');
+    sPWin = loadSound('Assets/sounds/pWin.mp3');
+    sDual = loadSound('Assets/sounds/dual.mp3');
+    sWin = loadSound('Assets/sounds/win.mp3');
+    kantPlain = loadImage('Assets/images/kant.png');
+    kantSad = loadImage('Assets/images/kant_sad.png');
+    kantHappy = loadImage('Assets/images/kant_happy.png');
+    dekart = loadImage('Assets/images/dekart.png');
+    kantCom = loadStrings('Assets/text/kant.txt');
+    dekartCom = loadStrings('Assets/text/dekart.txt');
+    names = loadStrings('Assets/text/names.txt');
+    imgDualism = loadImage('Assets/images/dualizm.png');
+
+    // create stars
+    createStars();
 }
 // ----------------------------------------- Setup
 function setup() {
@@ -109,7 +112,6 @@ function setup() {
     button.mousePressed(play);
     frameRate(60);
     playOnce = true;
-    createStars();
     sMusic.play();
     sMusic.loop();
     sMusic.playMode('restart');
@@ -124,7 +126,7 @@ function draw() {
     deltaTime = window.performance.now() - canvas._pInst._lastFrameTime;
     background(0);
     if(!pause){
-        drawStars();
+        // drawStars();
         if(ballDelay===0){
             ball.update(deltaTime);
         }
@@ -394,6 +396,10 @@ var Star = function(){
     this.pos = createVector(random(windowWidth), random(windowHeight));
     this.size = random(2, 6);
     this.opacity = random(20, 255);
+    this.sprite;
+};
+Star.prototype.preload = function(){
+    this.sprite = loadImage('../Assets/images/ball_white_50px.png');
 };
 Star.prototype.draw = function(){
     noStroke();
