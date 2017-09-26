@@ -71,23 +71,24 @@ var deltaTime = 0.0;
 
 // ----------------------------------------- Preload
 function preload() {
+    var rootpath = 'https://github.com/GordeyChernyy/Philosophers_Pinball/tree/gh-pages/'
     fbshare = createElement('div', '<div class="fb-share-button" data-href="http://gordeychernyy.github.io/Philosophers_Pinball/" data-layout="button_count"></div>');
-    sMusic = loadSound('Assets/sounds/music.mp3');
-    sBallTable = loadSound('Assets/sounds/ballTable.mp3');
-    sBallHit = loadSound('Assets/sounds/ballHit.mp3');
-    sLoose = loadSound('Assets/sounds/loose.mp3');
-    sPLoose = loadSound('Assets/sounds/pLoose.mp3');
-    sPWin = loadSound('Assets/sounds/pWin.mp3');
-    sDual = loadSound('Assets/sounds/dual.mp3');
-    sWin = loadSound('Assets/sounds/win.mp3');
-    kantPlain = loadImage('Assets/images/kant.png');
-    kantSad = loadImage('Assets/images/kant_sad.png');
-    kantHappy = loadImage('Assets/images/kant_happy.png');
-    dekart = loadImage('Assets/images/dekart.png');
-    kantCom = loadStrings('Assets/text/kant.txt');
-    dekartCom = loadStrings('Assets/text/dekart.txt');
-    names = loadStrings('Assets/text/names.txt');
-    imgDualism = loadImage('Assets/images/dualizm.png');
+    sMusic = loadSound(rootpath+'Assets/sounds/music.mp3');
+    sBallTable = loadSound(rootpath+'Assets/sounds/ballTable.mp3');
+    sBallHit = loadSound(rootpath+'Assets/sounds/ballHit.mp3');
+    sLoose = loadSound(rootpath+'Assets/sounds/loose.mp3');
+    sPLoose = loadSound(rootpath+'Assets/sounds/pLoose.mp3');
+    sPWin = loadSound(rootpath+'Assets/sounds/pWin.mp3');
+    sDual = loadSound(rootpath+'Assets/sounds/dual.mp3');
+    sWin = loadSound(rootpath+'Assets/sounds/win.mp3');
+    kantPlain = loadImage(rootpath+'Assets/images/kant.png');
+    kantSad = loadImage(rootpath+'Assets/images/kant_sad.png');
+    kantHappy = loadImage(rootpath+'Assets/images/kant_happy.png');
+    dekart = loadImage(rootpath+'Assets/images/dekart.png');
+    kantCom = loadStrings(rootpath+'Assets/text/kant.txt');
+    dekartCom = loadStrings(rootpath+'Assets/text/dekart.txt');
+    names = loadStrings(rootpath+'Assets/text/names.txt');
+    imgDualism = loadImage(rootpath+'Assets/images/dualizm.png');
 
     // create stars
     createStars();
