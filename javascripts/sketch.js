@@ -72,22 +72,22 @@ var deltaTime = 0.0;
 // ----------------------------------------- Preload
 function preload() {
     fbshare = createElement('div', '<div class="fb-share-button" data-href="http://gordeychernyy.github.io/Philosophers_Pinball/" data-layout="button_count"></div>');
-    sMusic = loadSound('sounds/music.mp3');
-    sBallTable = loadSound('sounds/ballTable.mp3');
-    sBallHit = loadSound('sounds/ballHit.mp3');
-    sLoose = loadSound('sounds/loose.mp3');
-    sPLoose = loadSound('sounds/pLoose.mp3');
-    sPWin = loadSound('sounds/pWin.mp3');
-    sDual = loadSound('sounds/dual.mp3');
-    sWin = loadSound('sounds/win.mp3');
-    kantPlain = loadImage('images/kant.png');
-    kantSad = loadImage('images/kant_sad.png');
-    kantHappy = loadImage('images/kant_happy.png');
-    dekart = loadImage('images/dekart.png');
-    kantCom = loadStrings('kant.txt');
-    dekartCom = loadStrings('dekart.txt');
-    names = loadStrings('names.txt');
-    imgDualism = loadImage('images/dualizm.png');
+    sMusic = loadSound('../Assets/sounds/music.mp3');
+    sBallTable = loadSound('../Assets/sounds/ballTable.mp3');
+    sBallHit = loadSound('../Assets/sounds/ballHit.mp3');
+    sLoose = loadSound('../Assets/sounds/loose.mp3');
+    sPLoose = loadSound('../Assets/sounds/pLoose.mp3');
+    sPWin = loadSound('../Assets/sounds/pWin.mp3');
+    sDual = loadSound('../Assets/sounds/dual.mp3');
+    sWin = loadSound('../Assets/sounds/win.mp3');
+    kantPlain = loadImage('../Assets/images/kant.png');
+    kantSad = loadImage('../Assets/images/kant_sad.png');
+    kantHappy = loadImage('../Assets/images/kant_happy.png');
+    dekart = loadImage('../Assets/images/dekart.png');
+    kantCom = loadStrings('../Assets/text/kant.txt');
+    dekartCom = loadStrings('../Assets/text/dekart.txt');
+    names = loadStrings('../Assets/text/names.txt');
+    imgDualism = loadImage('../Assets/images/dualizm.png');
 }
 // ----------------------------------------- Setup
 function setup() {
@@ -431,34 +431,4 @@ Power.prototype.intersect = function(){
     }else{
         return false;
     }
-};
-// ----------------------------------------- Eye
-var Eye = function() {
-    this.x = 0;
-    this.y = 0;
-    this.size = 13;
-    this.angle = 0.0;
-};
-Eye.prototype.update = function(mx, my){
-    this.angle = atan2(my-this.y, mx-this.x);
-};
-Eye.prototype.display = function(){
-    push();
-    translate(this.x, this.y);
-    noStroke();
-    fill(213, 219, 176);
-    ellipse(0, 0, this.size, this.size);
-    rotate(this.angle);
-    fill(0);
-    var _x = 1.5;
-    var pos = _x*2;
-    ellipse(this.size/pos, 0, this.size/_x, this.size/_x);
-    pop();
-    push();
-    translate(this.x, this.y);
-    var _x2 = 3.0;
-    var pos2 = _x2*2;
-    fill(255, 100);
-    ellipse(this.size/pos2, 0, this.size/_x2, this.size/_x2);
-    pop();
 };
