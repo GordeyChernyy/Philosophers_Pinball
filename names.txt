@@ -1,7 +1,7 @@
-Уровень:
-Кант
-Декарт
-Дуализм:
-Ура! Победа за Кантом!
-Вы проиграли :(
-ДУАЛИЗМ
+Level:
+Kant:
+Descartes:
+Dualism:
+Kant won!
+You lost:(
+DUALISM
