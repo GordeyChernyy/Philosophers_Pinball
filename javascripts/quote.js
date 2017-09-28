@@ -1,7 +1,17 @@
+var Rect = function(){
+	this.visible = true;
+	this.height = 0;
+	this.initWidth = 0;
+	this.width = 0;
+	this.initHeight = 0;
+	this.color = color(0, 0, 0);
+	this.position = new p5.Vector(0, 0);
+};
 var Quote = function() {
     this.quotes = {};
     this.sprites = [];
     this.textSize = 30;
+    this.image;
     this.curQuoteName = 'Dekart';
     this.sprite = createSprite();
     this.bounds = new p5.Vector(170, 500); // text area
@@ -47,7 +57,7 @@ Quote.prototype.setupSprites = function() {
     for (var i = 0; i < this.quotes[this.curQuoteName].length; i++) {
         var txt = this.quotes[this.curQuoteName][i];
         var w = textWidth(txt);
-        var sprite = createSprite(0, 0, w, this.textSize);
+        var sprite = new Rect();
         sprite.initWidth = w;
         sprite.initHeight = this.textSize;
         sprite.width = w;
@@ -63,7 +73,6 @@ Quote.prototype.setQuotes = function(quotes) {
     this.setupSprites();
 }
 Quote.prototype.draw = function() {
-    fill(255);
     textSize(this.textSize);
 
     // this.sprite.width = textWidth("It is");
@@ -75,12 +84,15 @@ Quote.prototype.draw = function() {
 
     for (var i = 0; i < this.quotes[this.curQuoteName].length; i++) {
         var txt = this.quotes[this.curQuoteName][i];
+        var sprite = this.sprites[i];
 
+        fill(255);
         text(txt, x, y);
 
-        var sprite = this.sprites[i];
-        var spritePos = toCornerPos(sprite, x, y);
-        sprite.position.set(spritePos[0], spritePos[1]);
+        if(sprite.visible){        	
+            fill(sprite.color);
+            rect(x, y - sprite.height + this.textSize/2, sprite.width, sprite.height);
+        }
 
         x += textWidth(txt);
 

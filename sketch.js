@@ -12,7 +12,7 @@ var quote;
 var quoteStrings;
 
 // images
-var eyeImage;
+var eyeImage, rectImage;
 
 
 // sounds
@@ -41,6 +41,7 @@ function preload() {
     pongHitSound = loadSound('Assets/sounds/ballHit.mp3');
     pongWallSound = loadSound('Assets/sounds/ballTable.mp3');
     // images
+    rectImage = loadImage('Assets/images/rect_10px.png');
     eyeImage = loadImage('Assets/images/eye.png');
     kantPlain = loadImage('Assets/images/kant.png');
     kantSad = loadImage('Assets/images/kant_sad.png');
@@ -67,6 +68,7 @@ function setup() {
 
 function setupQuote(argument) {
     quote = new Quote();
+    quote.image = rectImage;
     quote.setQuotes(quoteStrings);
 }
 
