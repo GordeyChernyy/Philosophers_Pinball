@@ -2,8 +2,10 @@
 var Ball = function(image){ 
     this.sprite = createSprite(width/2, height/2, 10, 10);
     this.sprite.addImage(image);
-    this.maxSpeed = 10;
-    this.sprite.maxSpeed = 10;
+    this.maxSpeed = 5;
+    this.handSpeed = 5;
+    this.sprite.maxSpeed = 40;
+    this.sprite.delay = 0;
     this.sprite.setSpeed(10, -180);
     // delegate
     this.onLooseFunc = [];
@@ -12,10 +14,10 @@ var Ball = function(image){
     this.onRightCollideFunc = [];
     this.onWallCollideFunc = [];
     // colliders
-    this.paddleLeft = createSprite();
-    this.paddleRight = createSprite();
-    this.wallTop = createSprite();
-    this.wallBottom = createSprite();
+    this.paddleLeft ;
+    this.paddleRight;
+    this.wallTop ;
+    this.wallBottom ;
 };
 Ball.prototype.onLoose = function(func){ // subscribe to loose event
     this.onLooseFunc.push(func);
@@ -36,24 +38,33 @@ Ball.prototype.pos = function(){ // get ball position
     return this.sprite.position;
 };
 Ball.prototype.update = function() {
+    
     if(this.sprite.bounce(this.wallTop)){
         for (var i = 0; i < this.onWallCollideFunc.length; i++) { // run every subscribed function in array
             this.onWallCollideFunc[i]();
         }
     }
-    if(this.sprite.bounce(this.wallBottom)){
+    if(this.sprite.bounce(this.wallBottom) ){
         for (var i = 0; i < this.onWallCollideFunc.length; i++) { // run every subscribed function in array
             this.onWallCollideFunc[i]();
         }
     }
 
-    if(this.sprite.bounce(this.paddleLeft)){ // paddle left collide
+    // to avoid multiple colliding 
+    var available = this.sprite.delay < 0 ? true : false;
+
+    if(this.sprite.bounce(this.paddleLeft) && available){ // paddle left collide
+        this.sprite.delay = 4;
+        this.maxSpeed = this.handSpeed;
+
         for (var i = 0; i < this.onLeftCollideFunc.length; i++) { // run every subscribed function in array
             this.onLeftCollideFunc[i]();
         }
         var swing = (this.sprite.position.y-this.paddleLeft.position.y)/3;
         this.sprite.setSpeed(this.maxSpeed, this.sprite.getDirection()+swing);
     }
+    this.sprite.delay--;
+
     if(this.sprite.bounce(this.paddleRight)){ // paddle right collide
         for (var i = 0; i < this.onRightCollideFunc.length; i++) { // run every subscribed function in array
             this.onRightCollideFunc[i]();

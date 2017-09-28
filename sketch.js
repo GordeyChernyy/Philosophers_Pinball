@@ -12,7 +12,7 @@ var quote;
 var quoteStrings;
 
 // images
-var eyeImage, rectImage;
+var eyeImage, rectImage, handImg;
 
 
 // sounds
@@ -42,6 +42,7 @@ function preload() {
     pongWallSound = loadSound('Assets/sounds/ballTable.mp3');
     // images
     rectImage = loadImage('Assets/images/rect_10px.png');
+    handImg = loadImage('Assets/images/hand.png');
     eyeImage = loadImage('Assets/images/eye.png');
     kantPlain = loadImage('Assets/images/kant.png');
     kantSad = loadImage('Assets/images/kant_sad.png');
@@ -103,6 +104,7 @@ function setupPlayer() {
     player.addFaceImage('normal', kantPlain);
     player.addFaceImage('loose', kantSad);
     player.addFaceImage('win', kantHappy);
+    player.hand.addImage(handImg);
     // create eyes
     player.setupEyes(eyeImage, new p5.Vector(71, 54), new p5.Vector(99, 54)); // eye pos in px mesured in photoshop according to sprite
     // subscribe to event when ball loose
@@ -148,6 +150,7 @@ function drawQuote() {
 }
 
 function updateBall() {
+    ball.handSpeed = map(player.handVelX, 0, 9, 5, 20);
     ball.update();
 }
 

@@ -13,7 +13,6 @@ var Quote = function() {
     this.textSize = 30;
     this.image;
     this.curQuoteName = 'Dekart';
-    this.sprite = createSprite();
     this.bounds = new p5.Vector(170, 500); // text area
     this.textPos = new p5.Vector(width / 2 - this.bounds.x / 2, 100); // center to the screen
 

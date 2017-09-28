@@ -1,11 +1,10 @@
 var AIPlayer = function() {
     this.smooth = 0.97;
     this.sprite = createSprite(width - 10, height, 10, 100);
-    this.sprite.debug = true;
     this.paddleSprite = createSprite(width - 10, height, 10, 100);
     this.paddleSprite.immovable = true;
 
-    this.sprite.rotationSpeed = 3;
+    this.sprite.rotationSpeed = 1.5;
     this.pos = new p5.Vector(width - 20, height/2);
 }
 AIPlayer.prototype.getPaddle = function() {
