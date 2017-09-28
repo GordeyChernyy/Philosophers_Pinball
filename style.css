@@ -1,0 +1,20 @@
+html, body {
+	background: black;
+
+  height: 100%;
+}
+#myContainer{
+	border: 1px solid gray;
+	width: 1000px;
+	/*display: block;*/
+	float:left;
+}
+#left{
+    width: calc(50% - 500px);
+    float:left;
+}
+#right{
+    width: calc(50% - 500px);
+    float:right;
+}
+

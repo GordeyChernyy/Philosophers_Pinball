@@ -1,6 +1,6 @@
 // ----------------------------------------- Ball
 var Ball = function(image){ 
-    this.sprite = createSprite(windowWidth/2, windowHeight/2, 10, 10);
+    this.sprite = createSprite(width/2, height/2, 10, 10);
     this.sprite.addImage(image);
     this.maxSpeed = 10;
     this.sprite.maxSpeed = 10;
@@ -65,17 +65,17 @@ Ball.prototype.update = function() {
         for (var i = 0; i < this.onLooseFunc.length; i++) { // run every subscribed function in array
             this.onLooseFunc[i]();
         }
-        this.sprite.position.x = windowWidth/2;
-        this.sprite.position.y = windowHeight/2;
+        this.sprite.position.x = width/2;
+        this.sprite.position.y = height/2;
         this.sprite.setSpeed(this.maxSpeed, 0);
     }
 
-    if(this.sprite.position.x>windowWidth) { // reset ball and move it the left
+    if(this.sprite.position.x>width) { // reset ball and move it the left
         for (var i = 0; i < this.onWinFunc.length; i++) { // run every subscribed function in array
             this.onWinFunc[i]();
         }
-        this.sprite.position.x = windowWidth/2;
-        this.sprite.position.y = windowHeight/2;
+        this.sprite.position.x = width/2;
+        this.sprite.position.y = height/2;
         this.sprite.setSpeed(this.maxSpeed, 180);
     }
 };
