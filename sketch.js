@@ -8,6 +8,7 @@ var player;
 // images
 var eyeImage;
 
+
 // sounds
 var soundPlayer;
 var looseSound, winSound, pongHitSound, pongWallSound;
@@ -18,6 +19,7 @@ var kantSprite;
 
 // AIPlayer 
 var aiPlayer;
+var chaosImage;
 
 // ball
 var ball, ballImage;
@@ -35,6 +37,7 @@ function preload() {
     kantSad = loadImage('Assets/images/kant_sad.png');
     kantHappy = loadImage('Assets/images/kant_happy.png');
     ballImage = loadImage('Assets/images/circle_15px.png');
+    chaosImage = loadImage('Assets/images/chaos2.png');
 }
 // -------------
 //     SETUP
@@ -60,6 +63,8 @@ function setupSoundPlayer(){
 }
 function setupAIPlayer() {
     aiPlayer = new AIPlayer();
+    aiPlayer.sprite.addImage(chaosImage);
+
 }
 
 function setupWalls() { // define walls here becuase we can have two balls but walls will be the same

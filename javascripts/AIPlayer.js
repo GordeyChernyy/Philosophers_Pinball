@@ -1,6 +1,7 @@
 var AIPlayer = function() {
     this.smooth = 0.97;
-    this.sprite = createSprite(windowWidth - 10, windowHeight, 10, 100);
+    this.sprite = createSprite(windowWidth - 20, windowHeight, 10, 100);
+    this.sprite.rotationSpeed = 3;
     this.sprite.immovable = true;
     this.pos = new p5.Vector(windowWidth - 20, windowHeight/2);
 }
