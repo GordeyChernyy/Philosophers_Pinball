@@ -17,7 +17,7 @@ var Quote = function() {
     this.textSize = 40;
     this.image;
     this.curQuoteName = 'Dekart';
-    this.bounds = new p5.Vector(310, 500); // text area
+    this.bounds = new p5.Vector(600, 500); // text area
     this.textPos = new p5.Vector(width / 2 - this.bounds.x / 2, 200); // center to the screen
 
     var self = this;
@@ -58,6 +58,9 @@ var Quote = function() {
     }
 }
 Quote.prototype.onQuoteReveal = function(func) {
+    this.onQuoteRevealFunc.push(func);
+};
+Quote.prototype.reset = function(func) {
     this.onQuoteRevealFunc.push(func);
 };
 Quote.prototype.setupSprites = function() {

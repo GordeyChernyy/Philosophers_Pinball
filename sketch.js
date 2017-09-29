@@ -90,9 +90,9 @@ function setupAIPlayer() {
 
 
 function setupWalls() { // define walls here becuase we can have two balls but walls will be the same
-    wallTop = createSprite(width / 2, -30 / 2, width, 30);
+    wallTop = createSprite(-30 / 2, height / 2,  30, height);
     wallTop.immovable = true; // should collide with ball
-    wallBottom = createSprite(width / 2, height + 30 / 2, width, 30);
+    wallBottom = createSprite(width + 30/2, height/2 , 30, height);
     wallBottom.immovable = true; // should collide with ball
 }
 

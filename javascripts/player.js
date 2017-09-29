@@ -44,24 +44,24 @@ Player.prototype.addHandImage = function(image) {
 Player.prototype.update = function(pos, targetPos) {
     // update pos
     // this.face.velocity.x = (mouseX-this.face.position.x)/10;
-    this.face.position.x = pos.x;
-    this.face.velocity.y = (mouseY + this.face.offset.y - this.face.position.y) / 10;
+    this.face.position.y = height - 100;
+    this.face.velocity.x = (mouseX + this.face.offset.x - this.face.position.x) / 10;
 
-    if (mouseX > 100) {
-        this.hand.velocity.x = ( 100 + this.hand.offset.x - this.hand.position.x) / 5;
+    if (mouseY < height - 100) {
+        this.hand.velocity.y = ( height - 100 + this.hand.offset.y - this.hand.position.y) / 5;
     }else{
         
-        this.hand.velocity.x = ( mouseX + this.hand.offset.x - this.hand.position.x) / 5;
+        this.hand.velocity.y = ( mouseY + this.hand.offset.y - this.hand.position.y) / 5;
     }
-    this.hand.position.y = mouseY + this.hand.offset.y;
+    this.hand.position.x = mouseX + this.hand.offset.x;
     
     // set velocity to uset it on ball acceleration
-    this.handVelX = Math.abs(this.hand.velocity.x);
+    this.handVelX = Math.abs(this.hand.velocity.y);
 
     this.eyeL.setLookAt(targetPos.x, targetPos.y);
-    this.eyeL.setPos(pos.x, this.face.position.y);
+    this.eyeL.setPos(this.face.position.x, this.face.position.y);
     this.eyeR.setLookAt(targetPos.x, targetPos.y);
-    this.eyeR.setPos(pos.x, this.face.position.y);
+    this.eyeR.setPos(this.face.position.x, this.face.position.y);
 
     // update timer for faces
     if (this.face.timer == 0) {
