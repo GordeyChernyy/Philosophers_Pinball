@@ -15,7 +15,7 @@ AIPlayer.prototype.update = function(target) {
 
 	var isTargetClose = target.x > width / 2 ? true : false;
 	var randomTarget = noise(frameCount/100.0)*height;
-	var targetPos = isTargetClose ? target.y : randomTarget;
+	var targetPos = isTargetClose ? target.y  + noise(frameCount/100)*20 : randomTarget;
     this.pos.y = this.pos.y * this.smooth + targetPos * (1 - this.smooth); // xeno smooth
     
     // set position

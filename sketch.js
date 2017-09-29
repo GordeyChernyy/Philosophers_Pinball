@@ -141,8 +141,8 @@ function draw() {
     updateAIPlayer();
     updateBall();
 
-    drawQuote();
     drawSprites();
+    drawQuote();
 }
 
 function drawQuote() {
@@ -150,6 +150,7 @@ function drawQuote() {
 }
 
 function updateBall() {
+    ball.bounceWith(quote.activeColliders);
     ball.handSpeed = map(player.handVelX, 0, 9, 5, 20);
     ball.update();
 }
