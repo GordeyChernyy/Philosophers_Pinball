@@ -30,7 +30,7 @@ var Quote = function() {
                 var sprite = self.sprites[i];
                 if (sprite.visible) {
                     visibleSprites.push(sprite);
-                } 
+                }
             }
             if (visibleSprites.length > 0) { // hide random sprite
                 var randomIndex = int(random(0, visibleSprites.length));
@@ -41,6 +41,7 @@ var Quote = function() {
                 for (var i = 0; i < self.sprites.length; i++) {
                     var sprite = self.sprites[i];
                     sprite.visible = true;
+                    sprite.timer = 20;
                     sprite.sprite.visible = false;
                     self.activeColliders = [];
                 }
@@ -52,6 +53,7 @@ var Quote = function() {
         for (var i = 0; i < self.sprites.length; i++) {
             var sprite = self.sprites[i];
             sprite.visible = true;
+            sprite.timer = 20;
             sprite.sprite.visible = false;
             self.activeColliders = [];
         }
@@ -72,6 +74,7 @@ Quote.prototype.setupSprites = function() {
         var txt = this.quotes[this.curQuoteName][i];
         var w = textWidth(txt);
         var sprite = new Rect();
+        sprite.timer = 20;
         sprite.initWidth = w;
         sprite.initHeight = this.textSize;
         sprite.width = w;
@@ -111,8 +114,12 @@ Quote.prototype.draw = function() {
 
 
         if (!sprite.visible) {
+
             fill(sprite.color);
-            rect(sprite.x, sprite.y -sprite.sprite.height, sprite.sprite.width , sprite.sprite.height);
+            noStroke();
+            rect(sprite.x, sprite.y - sprite.sprite.height, sprite.sprite.width, sprite.timer < 0 ? sprite.sprite.height : height);
+
+            sprite.timer--;
             fill(255);
             text(txt, sprite.x, sprite.y);
         }

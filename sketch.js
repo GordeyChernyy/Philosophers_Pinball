@@ -141,8 +141,8 @@ function draw() {
     updateAIPlayer();
     updateBall();
 
-    drawSprites();
     drawQuote();
+    drawSprites();
 }
 
 function drawQuote() {

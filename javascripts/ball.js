@@ -70,7 +70,7 @@ Ball.prototype.update = function() {
         for (var i = 0; i < this.onLeftCollideFunc.length; i++) { // run every subscribed function in array
             this.onLeftCollideFunc[i]();
         }
-        var swing = (this.sprite.position.x - this.paddleLeft.position.x) / 3;
+        var swing = (this.sprite.position.x - this.paddleLeft.position.x) / 1.8;
         this.sprite.setSpeed(this.maxSpeed, this.sprite.getDirection() + swing);
     }
     this.sprite.delay--;
@@ -79,7 +79,7 @@ Ball.prototype.update = function() {
         for (var i = 0; i < this.onRightCollideFunc.length; i++) { // run every subscribed function in array
             this.onRightCollideFunc[i]();
         }
-        var swing = (this.sprite.position.x - this.paddleRight.position.x) / 3;
+        var swing = (this.sprite.position.x - this.paddleRight.position.x) / 1.8;
         this.sprite.setSpeed(this.maxSpeed, this.sprite.getDirection() + swing);
     }
     if (this.sprite.position.y > height) { // reset ball and move it the right
