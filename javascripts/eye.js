@@ -6,6 +6,9 @@ var Eye = function(image, posOffset) {
     this.size = 13;
     this.angle = 0.0;
 };
+Eye.prototype.destroy = function(){
+    this.sprite.remove();
+}
 Eye.prototype.setLookAt = function(mx, my){
     this.angle = atan2(my-this.sprite.position.y, mx-this.sprite.position.x);
     this.sprite.rotation = this.angle *180 / Math.PI;

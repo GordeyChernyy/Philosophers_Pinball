@@ -14,7 +14,6 @@ var quoteStrings;
 // images
 var eyeImage, rectImage, handImg;
 
-
 // sounds
 var soundPlayer;
 var looseSound, winSound, pongHitSound, pongWallSound;
@@ -22,6 +21,9 @@ var looseSound, winSound, pongHitSound, pongWallSound;
 // kant
 var kantPlain, kantSad, kantHappy;
 var kantSprite;
+
+// dekart
+var dekartPlain;
 
 // AIPlayer 
 var aiPlayer;
@@ -47,6 +49,7 @@ function preload() {
     kantPlain = loadImage('Assets/images/kant.png');
     kantSad = loadImage('Assets/images/kant_sad.png');
     kantHappy = loadImage('Assets/images/kant_happy.png');
+    dekartPlain = loadImage('Assets/images/dekart.png');
     ballImage = loadImage('Assets/images/circle_15px.png');
     chaosImage = loadImage('Assets/images/chaos2.png');
 }
@@ -100,14 +103,30 @@ function setupPlayer() {
     playerPos = new p5.Vector(100, 0);
 
     player = new Player();
-    // add images, labels always should be 'normal' 'loose' 'win' to match events
-    player.addFaceImage('normal', kantPlain);
-    player.addFaceImage('loose', kantSad);
-    player.addFaceImage('win', kantHappy);
-    player.hand.addImage(handImg);
-    // create eyes
-    player.setupEyes(eyeImage, new p5.Vector(71, 54), new p5.Vector(99, 54)); // eye pos in px mesured in photoshop according to sprite
-    // subscribe to event when ball loose
+    
+    player.addCharacterData({
+        name: 'Kant',
+        faceNormal: kantPlain,
+        faceWin: kantHappy,
+        faceLose: kantSad,
+        eyeImage: eyeImage,
+        faceOffset: new p5.Vector(0, 0),
+        eyeLPos: new p5.Vector(71, 54),
+        eyeRPos: new p5.Vector(99, 54),
+    }); 
+    player.addCharacterData({
+        name: 'Dekart',
+        faceNormal: dekartPlain,
+        faceWin: dekartPlain,
+        faceLose: dekartPlain,
+        eyeImage: eyeImage,
+        faceOffset: new p5.Vector(0, 0),
+        eyeLPos: new p5.Vector(83, 56),
+        eyeRPos: new p5.Vector(113, 56),
+    }); 
+
+    player.setCharacter();
+    player.addHand(handImg);
 }
 
 function setupBall() {
@@ -121,6 +140,7 @@ function setupBall() {
     // subscribe to ball events, pass the function as variable that should run on any ball event
     ball.onLoose(player.onLoose);
     ball.onWin(player.onWin);
+    ball.onLoose(player.onNextPlayer);
     // subscribe sounds to ball events
     ball.onLoose(soundPlayer.play['looseSound']);
     ball.onWin(soundPlayer.play['winSound']);

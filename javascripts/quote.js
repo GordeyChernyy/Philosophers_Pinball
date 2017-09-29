@@ -21,7 +21,10 @@ var Quote = function() {
     this.textPos = new p5.Vector(width / 2 - this.bounds.x / 2, 200); // center to the screen
 
     var self = this;
-    this.onQuoteRevealFunc = []; // delegate
+
+    // delegate emulation
+    this.onQuoteRevealFunc = [];
+    this.onQuoteSolveFunc = [];
 
     this.revealWord = function() {
         if (self.sprites.length > 0) {
@@ -37,14 +40,7 @@ var Quote = function() {
                 visibleSprites[randomIndex].visible = false;
                 self.activeColliders.push(visibleSprites[randomIndex].sprite);
             } else {
-                // TODO: add progression and events
-                for (var i = 0; i < self.sprites.length; i++) {
-                    var sprite = self.sprites[i];
-                    sprite.visible = true;
-                    sprite.timer = 20;
-                    sprite.sprite.visible = false;
-                    self.activeColliders = [];
-                }
+                self.solveQuote();
             }
         }
     };
@@ -59,11 +55,25 @@ var Quote = function() {
         }
     }
 }
+Quote.prototype.solveQuote = function() {
+	for (var i = 0; i < this.onQuoteSolveFunc.length; i++) {
+		this.onQuoteSolveFunc[i]();
+	}
+
+    for (var i = 0; i < this.sprites.length; i++) {
+        var sprite = this.sprites[i];
+        sprite.visible = true;
+        sprite.timer = 20;
+        sprite.sprite.visible = false;
+        this.activeColliders = [];
+    }
+};
+// Delegate emulation
 Quote.prototype.onQuoteReveal = function(func) {
     this.onQuoteRevealFunc.push(func);
 };
-Quote.prototype.reset = function(func) {
-    this.onQuoteRevealFunc.push(func);
+Quote.prototype.onQuoteSolve = function(func) {
+    this.onQuoteSolveFunc.push(func);
 };
 Quote.prototype.setupSprites = function() {
     var x = this.textPos.x;

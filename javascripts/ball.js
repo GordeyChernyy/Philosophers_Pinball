@@ -41,11 +41,13 @@ Ball.prototype.pos = function() { // get ball position
     return this.sprite.position;
 };
 Ball.prototype.bounceWith = function(sprites) {
-    for (var i = 0; i < sprites.length; i++) {
-        var sprite = sprites[i];
-        if (this.sprite.bounce(sprite)) {
-            for (var i = 0; i < this.onWallCollideFunc.length; i++) { // run every subscribed function in array
-                this.onWallCollideFunc[i]();
+    if(this.collideWithOthers){        
+        for (var i = 0; i < sprites.length; i++) {
+            var sprite = sprites[i];
+            if (this.sprite.bounce(sprite)) {
+                for (var i = 0; i < this.onWallCollideFunc.length; i++) { // run every subscribed function in array
+                    this.onWallCollideFunc[i]();
+                }
             }
         }
     }
@@ -94,7 +96,7 @@ Ball.prototype.paddleB = function() {
     // paddle right collide
     if (this.sprite.bounce(this.paddleRight)) {
         // after player hits the ball it can collide with obsctacles
-        this.collideWithOthers = false;
+        this.collideWithOthers = true;
         // delegate
         for (var i = 0; i < this.onRightCollideFunc.length; i++) { // run every subscribed function in array
             this.onRightCollideFunc[i]();
@@ -107,7 +109,7 @@ Ball.prototype.paddleB = function() {
 Ball.prototype.lose = function() {
     // reset ball and move it the right
     if (this.sprite.position.y > height) {
-        // after player hits the ball it can collide with obsctacles
+       // Don't collide with obsctacles
         this.collideWithOthers = false;
 
         for (var i = 0; i < this.onLooseFunc.length; i++) { // run every subscribed function in array
