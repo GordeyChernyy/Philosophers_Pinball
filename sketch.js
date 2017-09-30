@@ -9,7 +9,7 @@ var player;
 
 // text
 var quote;
-var quoteStrings;
+var quoteDekart, quoteKant;
 
 // images
 var eyeImage, rectImage, handImg;
@@ -35,8 +35,8 @@ var wallTop, wallBottom;
 
 function preload() {
     // text
-    quoteStrings = {};
-    quoteStrings['Dekart'] = loadStrings('Assets/text/quoteDekart1.txt');
+    quoteDekart = loadStrings('Assets/text/quoteDekart1.txt');
+    quoteKant = loadStrings('Assets/text/quoteKant1.txt');
     // sounds
     looseSound = loadSound('Assets/sounds/pLoose.mp3');
     winSound = loadSound('Assets/sounds/pWin.mp3');
@@ -62,18 +62,29 @@ function setup() {
     width = canvas.width;
     height = canvas.height;
 
-    setupQuote();
     setupSoundPlayer();
     setupWalls();
     setupAIPlayer();
     setupPlayer();
+    setupQuote();
     setupBall();
 }
 
 function setupQuote(argument) {
     quote = new Quote();
-    quote.image = rectImage;
-    quote.setQuotes(quoteStrings);
+    quote.add({
+        name: 'Dekart',
+        strings: quoteDekart,
+        textSize: 40
+    });
+    quote.add({
+        name: 'Kant',
+        strings: quoteKant,
+        textSize: 30
+    });
+    quote.createQuote();
+    quote.onQuoteSolve(player.onNextPlayer);
+    quote.onQuoteSolve(quote.nextQuote);
 }
 
 function setupSoundPlayer() {
@@ -91,11 +102,10 @@ function setupAIPlayer() {
 
 }
 
-
 function setupWalls() { // define walls here becuase we can have two balls but walls will be the same
-    wallTop = createSprite(-30 / 2, height / 2,  30, height);
+    wallTop = createSprite(-30 / 2, height / 2, 30, height);
     wallTop.immovable = true; // should collide with ball
-    wallBottom = createSprite(width + 30/2, height/2 , 30, height);
+    wallBottom = createSprite(width + 30 / 2, height / 2, 30, height);
     wallBottom.immovable = true; // should collide with ball
 }
 
@@ -103,7 +113,7 @@ function setupPlayer() {
     playerPos = new p5.Vector(100, 0);
 
     player = new Player();
-    
+
     player.addCharacterData({
         name: 'Kant',
         faceNormal: kantPlain,
@@ -113,7 +123,7 @@ function setupPlayer() {
         faceOffset: new p5.Vector(0, 0),
         eyeLPos: new p5.Vector(71, 54),
         eyeRPos: new p5.Vector(99, 54),
-    }); 
+    });
     player.addCharacterData({
         name: 'Dekart',
         faceNormal: dekartPlain,
@@ -123,7 +133,7 @@ function setupPlayer() {
         faceOffset: new p5.Vector(0, 0),
         eyeLPos: new p5.Vector(83, 56),
         eyeRPos: new p5.Vector(113, 56),
-    }); 
+    });
 
     player.setCharacter();
     player.addHand(handImg);
@@ -140,7 +150,6 @@ function setupBall() {
     // subscribe to ball events, pass the function as variable that should run on any ball event
     ball.onLoose(player.onLoose);
     ball.onWin(player.onWin);
-    ball.onLoose(player.onNextPlayer);
     // subscribe sounds to ball events
     ball.onLoose(soundPlayer.play['looseSound']);
     ball.onWin(soundPlayer.play['winSound']);
@@ -150,12 +159,14 @@ function setupBall() {
     // quote 
     ball.onLeftCollide(quote.revealWord);
     ball.onLoose(quote.hideAllQuote);
+    ball.onRightCollide(quote.hideWord);
 }
 // -------------
 //     UPDATE
 // -------------
 function draw() {
     background(0, 0, 0);
+    keyEvents();
 
     updatePlayer();
     updateAIPlayer();
@@ -163,9 +174,16 @@ function draw() {
 
     drawQuote();
     drawSprites();
+
+}
+
+function keyEvents() {
+    if (keyWentDown('z')) {
+    }
 }
 
 function drawQuote() {
+
     quote.draw();
 }
 

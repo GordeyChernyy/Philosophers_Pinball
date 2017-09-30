@@ -1,5 +1,5 @@
 var AIPlayer = function() {
-    this.smooth = 0.95;
+    this.smooth = 0.99;
     this.sprite = createSprite(width - 10, height, 10, 100);
     this.paddleSprite = createSprite(0 , 0, 100, 10);
     this.paddleSprite.immovable = true;
