@@ -2,12 +2,14 @@
 var Ball = function(image) {
     this.sprite = createSprite(width / 2, height / 2, 10, 10);
     this.sprite.addImage(image);
+    this.sprite.depth = 5000;
     // speed
     this.maxSpeed = 5;
     this.initSpeed = 5;
     this.handSpeed = 5;
     this.sprite.maxSpeed = 20;
     this.sprite.setSpeed(10, -90);
+    this.collideCounter = 0; // create protection to not stuck inside the quote blocks
     this.sprite.delay = 0; // protection from multiple ball hit he can't hit for severel time during some mseconds 
     // delegate emulation
     this.onLooseFunc = [];
@@ -48,6 +50,11 @@ Ball.prototype.bounceWith = function(sprites) {
                 for (var i = 0; i < this.onWallCollideFunc.length; i++) { // run every subscribed function in array
                     this.onWallCollideFunc[i]();
                 }
+                this.collideCounter++;
+                // how many times it should collide in case of stucking
+                if(this.collideCounter > 5){
+                    this.collideWithOthers = false;
+                }
             }
         }
     }
@@ -64,11 +71,13 @@ Ball.prototype.wallCollide = function() {
         for (var i = 0; i < this.onWallCollideFunc.length; i++) { // run every subscribed function in array
             this.onWallCollideFunc[i]();
         }
+        this.collideCounter=0;
     }
     if (this.sprite.bounce(this.wallBottom)) {
         for (var i = 0; i < this.onWallCollideFunc.length; i++) { // run every subscribed function in array
             this.onWallCollideFunc[i]();
         }
+        this.collideCounter=0;
     }
 }
 Ball.prototype.paddleA = function() {
@@ -89,6 +98,8 @@ Ball.prototype.paddleA = function() {
         // ball custom reflection
         var swing = (this.sprite.position.x - this.paddleLeft.position.x) / 1.8;
         this.sprite.setSpeed(this.maxSpeed, this.sprite.getDirection() + swing);
+        // reset collideCounter
+        this.collideCounter=0;
     }
     this.sprite.delay--;
 }
@@ -104,6 +115,8 @@ Ball.prototype.paddleB = function() {
         // ball custom reflection
         var swing = (this.sprite.position.x - this.paddleRight.position.x) / 1.8;
         this.sprite.setSpeed(this.maxSpeed, this.sprite.getDirection() + swing);
+        // reset collideCounter
+        this.collideCounter=0;
     }
 }
 Ball.prototype.lose = function() {

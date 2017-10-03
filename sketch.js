@@ -188,13 +188,15 @@ function draw() {
 
     drawQuote();
     drawSprites();
-
+    drawBall();
 }
 
 function keyEvents() {
     if (keyWentDown('z')) {}
 }
-
+function drawBall(){
+    drawSprite(ball.sprite);
+}
 function drawQuote() {
 
     quote.draw();
