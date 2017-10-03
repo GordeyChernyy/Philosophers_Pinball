@@ -13,10 +13,11 @@ var quoteDekart, quoteKant;
 
 // images
 var eyeImage, rectImage, handImg;
+var chaosImages;
 
 // sounds
 var soundPlayer;
-var looseSound, winSound, pongHitSound, pongWallSound;
+var looseSound, winSound, pongHitSound, pongWallSound, music;
 
 // kant
 var kantPlain, kantSad, kantHappy;
@@ -38,11 +39,19 @@ function preload() {
     quoteDekart = loadStrings('Assets/text/quoteDekart1.txt');
     quoteKant = loadStrings('Assets/text/quoteKant1.txt');
     // sounds
+    music = loadSound('Assets/sounds/music.mp3');
     looseSound = loadSound('Assets/sounds/pLoose.mp3');
     winSound = loadSound('Assets/sounds/pWin.mp3');
     pongHitSound = loadSound('Assets/sounds/ballHit.mp3');
     pongWallSound = loadSound('Assets/sounds/ballTable.mp3');
     // images
+    // load chaos images
+    chaosImages = [];
+    for (var i = 0; i < 9; i++) {
+        var img1 = loadImage('Assets/images/chaos_' + (i + 1) + '.png');
+        var img2 = loadImage('Assets/images/chaosBlink_' + (i + 1) + '.png');
+        chaosImages[i] = [img1, img2];
+    }
     rectImage = loadImage('Assets/images/rect_10px.png');
     handImg = loadImage('Assets/images/hand.png');
     eyeImage = loadImage('Assets/images/eye.png');
@@ -62,12 +71,18 @@ function setup() {
     width = canvas.width;
     height = canvas.height;
 
+    setupSounds();
     setupSoundPlayer();
     setupWalls();
     setupAIPlayer();
     setupPlayer();
     setupQuote();
     setupBall();
+}
+
+function setupSounds() {
+    music.loop();
+    music.play();
 }
 
 function setupQuote(argument) {
@@ -98,8 +113,7 @@ function setupSoundPlayer() {
 
 function setupAIPlayer() {
     aiPlayer = new AIPlayer();
-    aiPlayer.sprite.addImage(chaosImage);
-
+    aiPlayer.addImages(chaosImages);
 }
 
 function setupWalls() { // define walls here becuase we can have two balls but walls will be the same
@@ -120,7 +134,7 @@ function setupPlayer() {
         faceWin: kantHappy,
         faceLose: kantSad,
         eyeImage: eyeImage,
-        faceOffset: new p5.Vector(0, 0),
+        faceOffset: new p5.Vector(0, 30),
         eyeLPos: new p5.Vector(71, 54),
         eyeRPos: new p5.Vector(99, 54),
     });
@@ -130,7 +144,7 @@ function setupPlayer() {
         faceWin: dekartPlain,
         faceLose: dekartPlain,
         eyeImage: eyeImage,
-        faceOffset: new p5.Vector(0, 0),
+        faceOffset: new p5.Vector(0, 30),
         eyeLPos: new p5.Vector(83, 56),
         eyeRPos: new p5.Vector(113, 56),
     });
@@ -178,8 +192,7 @@ function draw() {
 }
 
 function keyEvents() {
-    if (keyWentDown('z')) {
-    }
+    if (keyWentDown('z')) {}
 }
 
 function drawQuote() {
@@ -189,7 +202,7 @@ function drawQuote() {
 
 function updateBall() {
     ball.bounceWith(quote.activeColliders);
-    ball.handSpeed = map(player.handVelX, 0, 9, 5, 20);
+    ball.handSpeed = map(player.handVelX, 0, 9, 5, 10);
     ball.update();
 }
 

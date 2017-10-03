@@ -6,7 +6,7 @@ var Ball = function(image) {
     this.maxSpeed = 5;
     this.initSpeed = 5;
     this.handSpeed = 5;
-    this.sprite.maxSpeed = 40;
+    this.sprite.maxSpeed = 20;
     this.sprite.setSpeed(10, -90);
     this.sprite.delay = 0; // protection from multiple ball hit he can't hit for severel time during some mseconds 
     // delegate emulation
