@@ -34,6 +34,9 @@ var chaosImage;
 var ball, ballImage;
 var wallTop, wallBottom;
 
+// game manager
+var gameManager;
+
 function preload() {
     // text
     quoteDekart = loadStrings('Assets/text/quoteDekart1.txt');
@@ -71,18 +74,26 @@ function setup() {
     width = canvas.width;
     height = canvas.height;
 
-    setupSounds();
+
+    // setupSounds();
     setupSoundPlayer();
     setupWalls();
     setupAIPlayer();
     setupPlayer();
     setupQuote();
     setupBall();
+    setupGameManager();
+}
+
+function setupGameManager() {
+    gameManager = new GameManager();
+    gameManager.set('startScreen');
 }
 
 function setupSounds() {
-    music.loop();
     music.play();
+    music.loop();
+    music.playMode('restart');
 }
 
 function setupQuote(argument) {
@@ -105,10 +116,12 @@ function setupQuote(argument) {
 function setupSoundPlayer() {
     soundPlayer = new SoundPlayer();
     // collect sounds in soundPlayer
+    soundPlayer.isMute = true;
     soundPlayer.add('looseSound', looseSound);
     soundPlayer.add('winSound', winSound);
     soundPlayer.add('pongHitSound', pongHitSound);
     soundPlayer.add('pongWallSound', pongWallSound);
+    // mute for testing 
 }
 
 function setupAIPlayer() {
@@ -194,11 +207,12 @@ function draw() {
 function keyEvents() {
     if (keyWentDown('z')) {}
 }
-function drawBall(){
+
+function drawBall() {
     drawSprite(ball.sprite);
 }
-function drawQuote() {
 
+function drawQuote() {
     quote.draw();
 }
 

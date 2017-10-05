@@ -63,6 +63,9 @@ var Player = function() {
     this.onNextPlayer = function(){
         self.nextPlayer();
     }
+    this.fadeIn = function(){
+        
+    }
 };
 Player.prototype.nextPlayer = function() {
     this.curCharacterNum++;
