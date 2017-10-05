@@ -1,14 +1,14 @@
 // ----------------------------------------- Ball
 var Ball = function(image) {
+    this.enabled = false;
     this.sprite = createSprite(width / 2, height / 2, 10, 10);
     this.sprite.addImage(image);
-    this.sprite.depth = 5000;
+    this.sprite.visible = false;
     // speed
     this.maxSpeed = 5;
     this.initSpeed = 5;
     this.handSpeed = 5;
     this.sprite.maxSpeed = 20;
-    this.sprite.setSpeed(10, -90);
     this.collideCounter = 0; // create protection to not stuck inside the quote blocks
     this.sprite.delay = 0; // protection from multiple ball hit he can't hit for severel time during some mseconds 
     // delegate emulation
@@ -23,6 +23,17 @@ var Ball = function(image) {
     this.wallTop;
     this.wallBottom;
     this.collideWithOthers = false; // protection from obstacle stucking in case ball reset
+
+    var self = this;
+    this.enable = function() {
+        self.sprite.setSpeed(10, -90);
+        self.sprite.visible = true;
+        self.enabled = true;
+    }
+    this.disable = function() {
+        self.sprite.visible = false;
+        self.enabled = false;
+    }
 };
 Ball.prototype.onLoose = function(func) { // subscribe to loose event
     this.onLooseFunc.push(func);
@@ -43,7 +54,7 @@ Ball.prototype.pos = function() { // get ball position
     return this.sprite.position;
 };
 Ball.prototype.bounceWith = function(sprites) {
-    if(this.collideWithOthers){        
+    if (this.collideWithOthers) {
         for (var i = 0; i < sprites.length; i++) {
             var sprite = sprites[i];
             if (this.sprite.bounce(sprite)) {
@@ -52,7 +63,7 @@ Ball.prototype.bounceWith = function(sprites) {
                 }
                 this.collideCounter++;
                 // how many times it should collide in case of stucking
-                if(this.collideCounter > 5){
+                if (this.collideCounter > 5) {
                     this.collideWithOthers = false;
                 }
             }
@@ -60,24 +71,26 @@ Ball.prototype.bounceWith = function(sprites) {
     }
 }
 Ball.prototype.update = function() {
-    this.wallCollide();
-    this.paddleA();
-    this.paddleB();
-    this.lose();
-    this.win();
+    if (this.enabled) {
+        this.wallCollide();
+        this.paddleA();
+        this.paddleB();
+        this.lose();
+        this.win();
+    }
 };
 Ball.prototype.wallCollide = function() {
     if (this.sprite.bounce(this.wallTop)) {
         for (var i = 0; i < this.onWallCollideFunc.length; i++) { // run every subscribed function in array
             this.onWallCollideFunc[i]();
         }
-        this.collideCounter=0;
+        this.collideCounter = 0;
     }
     if (this.sprite.bounce(this.wallBottom)) {
         for (var i = 0; i < this.onWallCollideFunc.length; i++) { // run every subscribed function in array
             this.onWallCollideFunc[i]();
         }
-        this.collideCounter=0;
+        this.collideCounter = 0;
     }
 }
 Ball.prototype.paddleA = function() {
@@ -99,7 +112,7 @@ Ball.prototype.paddleA = function() {
         var swing = (this.sprite.position.x - this.paddleLeft.position.x) / 1.8;
         this.sprite.setSpeed(this.maxSpeed, this.sprite.getDirection() + swing);
         // reset collideCounter
-        this.collideCounter=0;
+        this.collideCounter = 0;
     }
     this.sprite.delay--;
 }
@@ -116,13 +129,16 @@ Ball.prototype.paddleB = function() {
         var swing = (this.sprite.position.x - this.paddleRight.position.x) / 1.8;
         this.sprite.setSpeed(this.maxSpeed, this.sprite.getDirection() + swing);
         // reset collideCounter
-        this.collideCounter=0;
+        this.collideCounter = 0;
     }
 }
+Ball.prototype.resetBall = function() {
+    // 
+};
 Ball.prototype.lose = function() {
     // reset ball and move it the right
     if (this.sprite.position.y > height) {
-       // Don't collide with obsctacles
+        // Don't collide with obsctacles
         this.collideWithOthers = false;
 
         for (var i = 0; i < this.onLooseFunc.length; i++) { // run every subscribed function in array

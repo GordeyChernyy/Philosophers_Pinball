@@ -74,7 +74,6 @@ function setup() {
     width = canvas.width;
     height = canvas.height;
 
-
     // setupSounds();
     setupSoundPlayer();
     setupWalls();
@@ -83,11 +82,38 @@ function setup() {
     setupQuote();
     setupBall();
     setupGameManager();
+    setupEvents();
 }
-
+function setupEvents(){    
+    quote.onQuoteSolve(gameManager.showLevelScreen);
+    gameManager.subscribe('startGame', player.fadeIn);
+    gameManager.subscribe('startGame', ball.enable);
+    gameManager.subscribe('startGame', aiPlayer.enable);
+    gameManager.subscribe('levelScreen', player.fadeOut);
+    gameManager.subscribe('levelScreen', aiPlayer.disable);
+    gameManager.subscribe('levelScreen', ball.disable);
+    gameManager.subscribe('nextLevel', quote.nextQuote);
+    gameManager.subscribe('nextLevel', player.nextPlayer);
+    gameManager.subscribe('nextLevel', player.fadeIn);
+    gameManager.subscribe('nextLevel', aiPlayer.enable);
+    gameManager.subscribe('nextLevel', ball.enable);
+    // subscribe to ball events, pass the function as variable that should run on any ball event
+    ball.onLoose(player.onLoose);
+    ball.onWin(player.onWin);
+    // subscribe sounds to ball events
+    ball.onLoose(soundPlayer.play['looseSound']);
+    ball.onWin(soundPlayer.play['winSound']);
+    ball.onLeftCollide(soundPlayer.play['pongHitSound']);
+    ball.onRightCollide(soundPlayer.play['pongHitSound']);
+    ball.onWallCollide(soundPlayer.play['pongWallSound']);
+    // quote 
+    ball.onLeftCollide(quote.revealWord);
+    ball.onLoose(quote.hideAllQuote);
+    ball.onRightCollide(quote.hideWord);
+}
 function setupGameManager() {
     gameManager = new GameManager();
-    gameManager.set('startScreen');
+    gameManager.showStartScreen();
 }
 
 function setupSounds() {
@@ -109,8 +135,6 @@ function setupQuote(argument) {
         textSize: 30
     });
     quote.createQuote();
-    quote.onQuoteSolve(player.onNextPlayer);
-    quote.onQuoteSolve(quote.nextQuote);
 }
 
 function setupSoundPlayer() {
@@ -162,8 +186,8 @@ function setupPlayer() {
         eyeRPos: new p5.Vector(113, 56),
     });
 
-    player.setCharacter();
     player.addHand(handImg);
+    player.setCharacter()
 }
 
 function setupBall() {
@@ -174,19 +198,6 @@ function setupBall() {
     ball.wallBottom = wallBottom;
     ball.paddleRight = aiPlayer.getPaddle(); // using getPaddle we can return any collided part of the player body (ex. hand or head )
     ball.paddleLeft = player.getPaddle();
-    // subscribe to ball events, pass the function as variable that should run on any ball event
-    ball.onLoose(player.onLoose);
-    ball.onWin(player.onWin);
-    // subscribe sounds to ball events
-    ball.onLoose(soundPlayer.play['looseSound']);
-    ball.onWin(soundPlayer.play['winSound']);
-    ball.onLeftCollide(soundPlayer.play['pongHitSound']);
-    ball.onRightCollide(soundPlayer.play['pongHitSound']);
-    ball.onWallCollide(soundPlayer.play['pongWallSound']);
-    // quote 
-    ball.onLeftCollide(quote.revealWord);
-    ball.onLoose(quote.hideAllQuote);
-    ball.onRightCollide(quote.hideWord);
 }
 // -------------
 //     UPDATE
@@ -202,12 +213,23 @@ function draw() {
     drawQuote();
     drawSprites();
     drawBall();
+    drawManager();
+
+    TWEEN.update();
 }
 
 function keyEvents() {
-    if (keyWentDown('z')) {}
+    if (keyWentDown('a')) {
+        player.fadeOut();
+    }
+    if(keyWentDown('s')){
+        player.nextPlayer();
+        player.fadeIn();
+    }
 }
-
+function drawManager(){
+    gameManager.draw();
+}
 function drawBall() {
     drawSprite(ball.sprite);
 }
@@ -219,7 +241,7 @@ function drawQuote() {
 function updateBall() {
     ball.bounceWith(quote.activeColliders);
     ball.handSpeed = map(player.handVelX, 0, 9, 5, 10);
-    ball.update();
+    ball.update(frameCount);
 }
 
 function updateAIPlayer() {

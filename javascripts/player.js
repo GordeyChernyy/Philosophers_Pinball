@@ -16,7 +16,9 @@ var Character = function(data) {
     this.face.addImage('normal', data['faceNormal']);
     this.face.addImage('loose', data['faceLose']);
     this.face.addImage('win', data['faceWin']);
-    this.face.offset = data['faceOffset'];
+
+    this.face.offsetInit = new p5.Vector(data['faceOffset'].x, data['faceOffset'].y);
+    this.face.offset = new p5.Vector(data['faceOffset'].x, data['faceOffset'].y);
     this.face.timer = 0;
     this.eyeL = new Eye(data['eyeImage'], calcEyeOffset(this.face, data['eyeLPos'].x, data['eyeLPos'].y));
     this.eyeR = new Eye(data['eyeImage'], calcEyeOffset(this.face, data['eyeRPos'].x, data['eyeRPos'].y));
@@ -48,6 +50,7 @@ var Player = function() {
     this.characterData = [];
     this.curCharacterNum = 0;
     this.handVelX = 0;
+    this.enabled = false;
     // this.hand.debug = true;
 
     // Create Event. Set function as a var to pass it somewhere, should run once
@@ -60,21 +63,44 @@ var Player = function() {
         self.getCurCharacter().face.changeImage('win');
         self.getCurCharacter().face.timer = 60;
     }
-    this.onNextPlayer = function(){
-        self.nextPlayer();
+    this.nextPlayer = function() {
+        self.curCharacterNum++;
+        if (self.curCharacterNum > self.characterData.length - 1) {
+            self.curCharacterNum = 0;
+        }
+        self.setCharacter();
     }
-    this.fadeIn = function(){
-        
+    this.fadeIn = function() {
+        self.enable();
+        self.getCurCharacter().face.offset.y = -100;
+        var animator = new TWEEN.Tween(self.getCurCharacter().face.offset)
+            .to({
+                y: self.getCurCharacter().face.offsetInit.y
+            }, 1000)
+            .easing(TWEEN.Easing.Cubic.Out)
+            .start()
+    }
+    this.fadeOut = function() {
+        var animator = new TWEEN.Tween(self.getCurCharacter().face.offset)
+            .to({
+                y: -100
+            }, 1000)
+            .easing(TWEEN.Easing.Cubic.In)
+            .start()
+            .onComplete(function() {
+                self.disable();
+            })
+    }
+    this.enable = function() {
+        self.enabled = true;
+        self.hand.visible = true;
+    }
+    this.disable = function() {
+        self.enabled = false;
+        self.hand.visible = false;
     }
 };
-Player.prototype.nextPlayer = function() {
-    this.curCharacterNum++;
-    if (this.curCharacterNum > this.characterData.length - 1) {
-        this.curCharacterNum = 0;
-    }
-    this.setCharacter();
-    this.correctDepth();
-}
+
 Player.prototype.addCharacterData = function(data) {
     this.characterData.push(data);
 };
@@ -84,7 +110,7 @@ Player.prototype.setCharacter = function() {
         delete this.character;
     }
     this.character = new Character(this.characterData[this.curCharacterNum]);
-    
+    this.correctDepth();
 };
 
 
@@ -101,6 +127,7 @@ Player.prototype.getPaddle = function() {
 
 Player.prototype.addHand = function(image) {
     this.hand = createSprite();
+    this.hand.visible = false;
     this.hand.offset = new p5.Vector(20, -50);
     this.hand.immovable = true;
     this.hand.addImage(image);
@@ -120,8 +147,10 @@ Player.prototype.updateHand = function(pos, targetPos) {
 };
 
 Player.prototype.update = function(pos, targetPos) {
-    this.updateHand(pos, targetPos);
-    this.getCurCharacter().update(pos, targetPos);
+    if (this.enabled) {
+        this.updateHand(pos, targetPos);
+        this.getCurCharacter().update(pos, targetPos);
+    }
 };
 
 function calcEyeOffset(img, posx, posy) {
