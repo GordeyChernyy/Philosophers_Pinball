@@ -9,7 +9,7 @@ var player;
 
 // text
 var quote;
-var quoteDekart, quoteKant, quoteTest;
+var quoteDekart, quoteKant, quoteHume,quoteSocrates,quotePlato;
 
 // images
 var eyeImage, rectImage, handImg;
@@ -27,6 +27,16 @@ var kantSprite;
 // dekart
 var dekartPlain;
 
+//socrates
+var socratesPlain, socratesSad, socratesHappy;
+
+//hume
+var humePlain, humeSad, humeHappy;
+
+//plato
+var platoPlain, platoSad, platoHappy;
+
+
 // AIPlayer 
 var aiPlayer;
 var chaosImage;
@@ -42,7 +52,10 @@ function preload() {
     // text
     quoteDekart = loadStrings('Assets/text/quoteDekart1.txt');
     quoteKant = loadStrings('Assets/text/quoteKant1.txt');
-    quoteTest = loadStrings('Assets/text/quoteTest.txt');
+    quoteHume = loadStrings('Assets/text/quoteHume1.txt');
+    quoteSocrates = loadStrings('Assets/text/quoteSocrates1.txt');
+    quotePlato = loadStrings('Assets/text/quotePlato1.txt');
+    
     // sounds
     music = loadSound('Assets/sounds/music.mp3');
     looseSound = loadSound('Assets/sounds/pLoose.mp3');
@@ -61,12 +74,36 @@ function preload() {
     rectImage = loadImage('Assets/images/rect_10px.png');
     handImg = loadImage('Assets/images/hand.png');
     eyeImage = loadImage('Assets/images/eye.png');
+
+    // kant faces
     kantPlain = loadImage('Assets/images/kant.png');
     kantSad = loadImage('Assets/images/kant_sad.png');
     kantHappy = loadImage('Assets/images/kant_happy.png');
+
+    //dekart faces
     dekartPlain = loadImage('Assets/images/dekart.png');
+    dekartSad= loadImage('Assets/images/dekart_sad.png');
+    dekartHappy = loadImage('Assets/images/dekart_happy.png');
+
+    //socrates faces
+    socratesPlain = loadImage('Assets/images/socrates.png');
+    socratesSad =loadImage('Assets/images/socrates_sad.png');
+    socratesHappy =loadImage('Assets/images/socrates_happy.png');
+
+    //hume faces
+    humePlain = loadImage('Assets/images/hume.png');
+    humeSad =loadImage('Assets/images/hume_sad.png');
+    humeHappy =loadImage('Assets/images/hume_happy.png');
+
+    //plato faces
+    platoPlain = loadImage('Assets/images/plato.png');
+    platoSad =loadImage('Assets/images/plato_sad.png');
+    platoHappy =loadImage('Assets/images/plato_happy.png');
+
+
     ballImage = loadImage('Assets/images/circle_15px.png');
     chaosImage = loadImage('Assets/images/chaos2.png');
+
 }
 // -------------
 //     SETUP
@@ -131,13 +168,28 @@ function setupSounds() {
 function setupQuote(argument) {
     quote = new Quote();
     quote.add({
-        name: 'Dekart',
+        name: 'Kant',
         strings: quoteKant,
         textSize: 40
     });
     quote.add({
-        name: 'Kant',
-        strings: quoteKant,
+        name: 'Dekart',
+        strings: quoteDekart,
+        textSize: 30
+    });
+        quote.add({
+        name: 'Hume',
+        strings: quoteHume,
+        textSize: 30
+    });
+        quote.add({
+        name: 'Socrates',
+        strings: quoteSocrates,
+        textSize: 30
+    });
+        quote.add({
+        name: 'Plato',
+        strings: quotePlato,
         textSize: 30
     });
     quote.createQuote();
@@ -185,12 +237,42 @@ function setupPlayer() {
     player.addCharacterData({
         name: 'Dekart',
         faceNormal: dekartPlain,
-        faceWin: dekartPlain,
-        faceLose: dekartPlain,
+        faceWin: dekartHappy,
+        faceLose: dekartSad,
         eyeImage: eyeImage,
         faceOffset: new p5.Vector(0, 30),
         eyeLPos: new p5.Vector(83, 56),
         eyeRPos: new p5.Vector(113, 56),
+    });
+    player.addCharacterData({
+        name: 'Hume',
+        faceNormal: humePlain,
+        faceWin: humeHappy,
+        faceLose: humeSad,
+        eyeImage: eyeImage,
+        faceOffset: new p5.Vector(0, 50),
+        eyeLPos: new p5.Vector(73, 74),
+        eyeRPos: new p5.Vector(44, 75),
+    });
+        player.addCharacterData({
+        name: 'Socrates',
+        faceNormal: socratesPlain,
+        faceWin: socratesHappy,
+        faceLose: socratesSad,
+        eyeImage: eyeImage,
+        faceOffset: new p5.Vector(0, 50),
+        eyeLPos: new p5.Vector(99, 63),
+        eyeRPos: new p5.Vector(70, 65),
+    });
+        player.addCharacterData({
+        name: 'Plato',
+        faceNormal: platoPlain,
+        faceWin: platoHappy,
+        faceLose: platoSad,
+        eyeImage: eyeImage,
+        faceOffset: new p5.Vector(0, 50),
+        eyeLPos: new p5.Vector(117, 53),
+        eyeRPos: new p5.Vector(93, 52),
     });
 
     player.addHand(handImg);
@@ -212,6 +294,7 @@ function setupBall() {
 function draw() {
     background(0, 0, 0);
     keyEvents();
+   
 
     updatePlayer();
     updateAIPlayer();
@@ -223,6 +306,7 @@ function draw() {
     drawManager();
 
     TWEEN.update();
+    player.debug = true;
 }
 function keyEvents() {
     if (keyWentDown('a')) {
