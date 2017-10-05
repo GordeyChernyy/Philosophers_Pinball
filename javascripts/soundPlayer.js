@@ -10,6 +10,6 @@ SoundPlayer.prototype.add = function(label, sound) {
 	var self = this;
 	// create labeled array of functions to pass them somewhere as variable
 	this.play[label] = function(){
-		if(!self.isMute) sound.play();
+		if(!mute) sound.play();
 	}
 };

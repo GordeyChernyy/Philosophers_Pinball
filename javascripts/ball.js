@@ -4,6 +4,7 @@ var Ball = function(image) {
     this.sprite = createSprite(width / 2, height / 2, 10, 10);
     this.sprite.addImage(image);
     this.sprite.visible = false;
+    this.sprite.setSpeed(0, 0);
     // speed
     this.maxSpeed = 5;
     this.initSpeed = 5;
@@ -26,7 +27,6 @@ var Ball = function(image) {
 
     var self = this;
     this.enable = function() {
-        self.sprite.setSpeed(10, -90);
         self.sprite.visible = true;
         self.enabled = true;
     }
@@ -34,33 +34,65 @@ var Ball = function(image) {
         self.sprite.visible = false;
         self.enabled = false;
     }
+
+    this.onEvents = {
+        loose: [],
+        win: [],
+        leftCollide: [],
+        rightCollide: [],
+        wordCollide: [],
+        wallCollide: []
+    };
+
+    this.reset = function() {
+        self.resetBall(-90);
+    }
+
+    this.runEvent = function(eventName) {
+        for (var i = 0; i < self.onEvents[eventName].length; i++) {
+            self.onEvents[eventName][i]();
+        }
+    }
+
+    this.drawingStack = [];
 };
-Ball.prototype.onLoose = function(func) { // subscribe to loose event
-    this.onLooseFunc.push(func);
+
+Ball.prototype.subscribe = function(eventName, func) {
+    this.onEvents[eventName].push(func);
 };
-Ball.prototype.onWin = function(func) { // subscribe to win event
-    this.onWinFunc.push(func);
-};
-Ball.prototype.onLeftCollide = function(func) {
-    this.onLeftCollideFunc.push(func);
-};
-Ball.prototype.onRightCollide = function(func) {
-    this.onRightCollideFunc.push(func);
-};
+
 Ball.prototype.onWallCollide = function(func) {
     this.onWallCollideFunc.push(func);
 };
+
 Ball.prototype.pos = function() { // get ball position
     return this.sprite.position;
 };
+
 Ball.prototype.bounceWith = function(sprites) {
-    if (this.collideWithOthers) {
+    if (this.collideWithOthers && this.enabled) {
         for (var i = 0; i < sprites.length; i++) {
             var sprite = sprites[i];
             if (this.sprite.bounce(sprite)) {
-                for (var i = 0; i < this.onWallCollideFunc.length; i++) { // run every subscribed function in array
-                    this.onWallCollideFunc[i]();
-                }
+                // not the good place to do it here but it is easy for now
+                var w = sprite.width/2;
+                var h = sprite.height/2;
+                var x = sprite.position.x;
+                var y = sprite.position.y;
+                var posx = (x - w/2); 
+                var posy = (y - h/2);
+                // var h 
+                var animator = new TWEEN.Tween(sprite)
+                    .to({
+                        width : w,
+                        height : h
+                    }, 600)
+                    // .repeat(1)
+                    // .yoyo(true)
+                    .easing(TWEEN.Easing.Elastic.Out)
+                    .start()
+
+                this.runEvent('wordCollide');
                 this.collideCounter++;
                 // how many times it should collide in case of stucking
                 if (this.collideCounter > 5) {
@@ -81,16 +113,12 @@ Ball.prototype.update = function() {
 };
 Ball.prototype.wallCollide = function() {
     if (this.sprite.bounce(this.wallTop)) {
-        for (var i = 0; i < this.onWallCollideFunc.length; i++) { // run every subscribed function in array
-            this.onWallCollideFunc[i]();
-        }
         this.collideCounter = 0;
+        this.runEvent('wallCollide');
     }
     if (this.sprite.bounce(this.wallBottom)) {
-        for (var i = 0; i < this.onWallCollideFunc.length; i++) { // run every subscribed function in array
-            this.onWallCollideFunc[i]();
-        }
         this.collideCounter = 0;
+        this.runEvent('wallCollide');
     }
 }
 Ball.prototype.paddleA = function() {
@@ -101,18 +129,17 @@ Ball.prototype.paddleA = function() {
         // after player hits the ball it can collide with obsctacles
         this.collideWithOthers = true;
         // set delay to protect ball from multiple hits in msecond interval
-        this.sprite.delay = 4;
+        this.sprite.delay = 7;
         // set speed from other source
         this.maxSpeed = this.handSpeed;
         // delegate
-        for (var i = 0; i < this.onLeftCollideFunc.length; i++) { // run every subscribed function in array
-            this.onLeftCollideFunc[i]();
-        }
         // ball custom reflection
         var swing = (this.sprite.position.x - this.paddleLeft.position.x) / 1.8;
         this.sprite.setSpeed(this.maxSpeed, this.sprite.getDirection() + swing);
         // reset collideCounter
         this.collideCounter = 0;
+
+        this.runEvent('leftCollide');
     }
     this.sprite.delay--;
 }
@@ -122,43 +149,73 @@ Ball.prototype.paddleB = function() {
         // after player hits the ball it can collide with obsctacles
         this.collideWithOthers = true;
         // delegate
-        for (var i = 0; i < this.onRightCollideFunc.length; i++) { // run every subscribed function in array
-            this.onRightCollideFunc[i]();
-        }
         // ball custom reflection
         var swing = (this.sprite.position.x - this.paddleRight.position.x) / 1.8;
         this.sprite.setSpeed(this.maxSpeed, this.sprite.getDirection() + swing);
         // reset collideCounter
         this.collideCounter = 0;
+        this.runEvent('rightCollide');
     }
 }
-Ball.prototype.resetBall = function() {
-    // 
+Ball.prototype.resetBall = function(dir) {
+    this.maxSpeed = 5;
+    var ballStartSize = 300;
+    var ballEndsize = this.sprite.width;
+    var drawBall;
+    this.sprite.setSpeed(0, 0);
+
+    var self = this;
+    this.drawingStack.push(function() {
+        fill(self.animData['r'], self.animData['g'], self.animData['b'], self.animData['a']);
+        ellipse(self.sprite.position.x, self.sprite.position.y, self.animData['width'], self.animData['width']);
+    });
+    this.animData = {
+        r: dir > 0 ? 0 : 255,
+        g: dir > 0 ? 255 : 0,
+        b: 0,
+        a: 0,
+        width: ballStartSize
+    };
+    var animator = new TWEEN.Tween(this.animData)
+        .to({
+            r: 255,
+            g: 255,
+            b: 255,
+            a: 255,
+            width: ballEndsize
+        }, 1000)
+        .easing(TWEEN.Easing.Cubic.Out)
+        .start()
+        .onComplete(function() {
+            self.sprite.setSpeed(self.initSpeed, dir);
+            self.drawingStack.pop();
+            self.enable();
+        })
 };
+Ball.prototype.draw = function() {
+    for (var i = 0; i < this.drawingStack.length; i++) {
+        this.drawingStack[i]();
+    }
+}
 Ball.prototype.lose = function() {
     // reset ball and move it the right
     if (this.sprite.position.y > height) {
         // Don't collide with obsctacles
         this.collideWithOthers = false;
 
-        for (var i = 0; i < this.onLooseFunc.length; i++) { // run every subscribed function in array
-            this.onLooseFunc[i]();
-        }
         this.sprite.position.x = width / 2;
         this.sprite.position.y = height / 2;
-        this.sprite.setSpeed(this.initSpeed, -90);
+        this.resetBall(-90);
+        this.runEvent('loose');
     }
 }
 Ball.prototype.win = function() {
     if (this.sprite.position.y < 0) {
         // Don't collide with obsctacles
         this.collideWithOthers = false;
-
-        for (var i = 0; i < this.onWinFunc.length; i++) { // run every subscribed function in array
-            this.onWinFunc[i]();
-        }
         this.sprite.position.x = width / 2;
         this.sprite.position.y = height / 2;
-        this.sprite.setSpeed(this.initSpeed, 90);
+        this.resetBall(90);
+        this.runEvent('win');
     }
 };

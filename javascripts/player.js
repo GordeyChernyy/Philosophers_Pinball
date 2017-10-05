@@ -127,6 +127,7 @@ Player.prototype.getPaddle = function() {
 
 Player.prototype.addHand = function(image) {
     this.hand = createSprite();
+    this.hand.position = new p5.Vector(height, width/2); 
     this.hand.visible = false;
     this.hand.offset = new p5.Vector(20, -50);
     this.hand.immovable = true;

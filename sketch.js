@@ -9,13 +9,14 @@ var player;
 
 // text
 var quote;
-var quoteDekart, quoteKant;
+var quoteDekart, quoteKant, quoteTest;
 
 // images
 var eyeImage, rectImage, handImg;
 var chaosImages;
 
 // sounds
+var mute = true;
 var soundPlayer;
 var looseSound, winSound, pongHitSound, pongWallSound, music;
 
@@ -41,6 +42,7 @@ function preload() {
     // text
     quoteDekart = loadStrings('Assets/text/quoteDekart1.txt');
     quoteKant = loadStrings('Assets/text/quoteKant1.txt');
+    quoteTest = loadStrings('Assets/text/quoteTest.txt');
     // sounds
     music = loadSound('Assets/sounds/music.mp3');
     looseSound = loadSound('Assets/sounds/pLoose.mp3');
@@ -74,7 +76,7 @@ function setup() {
     width = canvas.width;
     height = canvas.height;
 
-    // setupSounds();
+    setupSounds();
     setupSoundPlayer();
     setupWalls();
     setupAIPlayer();
@@ -84,10 +86,11 @@ function setup() {
     setupGameManager();
     setupEvents();
 }
-function setupEvents(){    
-    quote.onQuoteSolve(gameManager.showLevelScreen);
+
+function setupEvents() {
+    quote.subscribe('solveQuote', gameManager.showLevelScreen);
     gameManager.subscribe('startGame', player.fadeIn);
-    gameManager.subscribe('startGame', ball.enable);
+    gameManager.subscribe('startGame', ball.reset);
     gameManager.subscribe('startGame', aiPlayer.enable);
     gameManager.subscribe('levelScreen', player.fadeOut);
     gameManager.subscribe('levelScreen', aiPlayer.disable);
@@ -96,37 +99,38 @@ function setupEvents(){
     gameManager.subscribe('nextLevel', player.nextPlayer);
     gameManager.subscribe('nextLevel', player.fadeIn);
     gameManager.subscribe('nextLevel', aiPlayer.enable);
-    gameManager.subscribe('nextLevel', ball.enable);
-    // subscribe to ball events, pass the function as variable that should run on any ball event
-    ball.onLoose(player.onLoose);
-    ball.onWin(player.onWin);
-    // subscribe sounds to ball events
-    ball.onLoose(soundPlayer.play['looseSound']);
-    ball.onWin(soundPlayer.play['winSound']);
-    ball.onLeftCollide(soundPlayer.play['pongHitSound']);
-    ball.onRightCollide(soundPlayer.play['pongHitSound']);
-    ball.onWallCollide(soundPlayer.play['pongWallSound']);
-    // quote 
-    ball.onLeftCollide(quote.revealWord);
-    ball.onLoose(quote.hideAllQuote);
-    ball.onRightCollide(quote.hideWord);
+    gameManager.subscribe('nextLevel', ball.reset);
+    ball.subscribe('loose', player.onLoose);
+    ball.subscribe('loose', quote.hideAllQuote);
+    ball.subscribe('loose', soundPlayer.play['looseSound']);
+    ball.subscribe('win', player.onWin);
+    ball.subscribe('win', soundPlayer.play['winSound']);
+    ball.subscribe('leftCollide', soundPlayer.play['pongHitSound']);
+    ball.subscribe('leftCollide', quote.revealWord);
+    ball.subscribe('rightCollide', soundPlayer.play['pongHitSound']);
+    ball.subscribe('rightCollide', quote.hideWord);
+    ball.subscribe('wallCollide', soundPlayer.play['pongWallSound']);
+    ball.subscribe('wordCollide', soundPlayer.play['pongWallSound']);
 }
+
 function setupGameManager() {
     gameManager = new GameManager();
     gameManager.showStartScreen();
 }
 
 function setupSounds() {
-    music.play();
-    music.loop();
-    music.playMode('restart');
+    if (!mute) {
+        music.play();
+        music.loop();
+        music.playMode('restart');
+    }
 }
 
 function setupQuote(argument) {
     quote = new Quote();
     quote.add({
         name: 'Dekart',
-        strings: quoteDekart,
+        strings: quoteKant,
         textSize: 40
     });
     quote.add({
@@ -140,7 +144,7 @@ function setupQuote(argument) {
 function setupSoundPlayer() {
     soundPlayer = new SoundPlayer();
     // collect sounds in soundPlayer
-    soundPlayer.isMute = true;
+    // soundPlayer.isMute = true;
     soundPlayer.add('looseSound', looseSound);
     soundPlayer.add('winSound', winSound);
     soundPlayer.add('pongHitSound', pongHitSound);
@@ -210,27 +214,29 @@ function draw() {
     updateAIPlayer();
     updateBall();
 
-    drawQuote();
     drawSprites();
+    drawQuote();
     drawBall();
     drawManager();
 
     TWEEN.update();
 }
-
 function keyEvents() {
     if (keyWentDown('a')) {
         player.fadeOut();
     }
-    if(keyWentDown('s')){
+    if (keyWentDown('s')) {
         player.nextPlayer();
         player.fadeIn();
     }
 }
-function drawManager(){
+
+function drawManager() {
     gameManager.draw();
 }
+
 function drawBall() {
+    ball.draw();
     drawSprite(ball.sprite);
 }
 

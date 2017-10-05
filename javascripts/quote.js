@@ -70,6 +70,8 @@ QuoteBlock.prototype.setup = function(strings) {
         block.sprite.height = block.height;
         // set collider pos
         var pos = toCornerPos(block, x, y);
+
+        // sprite
         block.sprite.position.set(pos[0], pos[1]);
         block.x = x;
         block.y = y;
@@ -105,19 +107,20 @@ QuoteBlock.prototype.getVisibleBlocks = function() {
 QuoteBlock.prototype.hideAllBlocks = function() {
     for (var i = 0; i < this.wordBlocks.length; i++) {
         this.wordBlocks[i].visible = false;
+        this.wordBlocks[i].sprite.visible = false;
         this.wordBlocks[i].reset();
     }
 };
 QuoteBlock.prototype.draw = function() {
-	textSize(this.textSize);
+    textSize(this.textSize);
     for (var i = 0; i < this.wordBlocks.length; i++) {
         var block = this.wordBlocks[i];
 
         if (block.visible) {
 
             fill(block.color);
-            noStroke();
-            rect(block.x, block.y - block.sprite.height, block.sprite.width, block.timer < 0 ? block.sprite.height : height);
+            // noStroke();
+            // rect(block.x, block.y - block.sprite.height, block.sprite.width, block.timer < 0 ? block.sprite.height : height);
 
             block.timer--;
             fill(255);
@@ -147,9 +150,10 @@ var Quote = function() {
             if (invisibleBlocks.length > 0) {
                 var randomIndex = int(random(0, invisibleBlocks.length));
                 invisibleBlocks[randomIndex].visible = true;
+                invisibleBlocks[randomIndex].sprite.visible = true;
                 self.activeColliders.push(invisibleBlocks[randomIndex].sprite);
             } else {
-                self.solveQuote();
+                self.runEvent('solveQuote');
             }
         }
     };
@@ -160,6 +164,7 @@ var Quote = function() {
             if (visibleBlocks.length > 0) {
                 var randomIndex = int(random(0, visibleBlocks.length));
                 visibleBlocks[randomIndex].visible = false;
+                visibleBlocks[randomIndex].sprite.visible = false;
                 visibleBlocks[randomIndex].reset();
                 // remove current block from colliders
                 var index = self.activeColliders.indexOf(visibleBlocks[randomIndex].sprite);
@@ -171,30 +176,33 @@ var Quote = function() {
         self.activeColliders = [];
         self.getCurQuoteBlock().hideAllBlocks();
     }
-    this.nextQuote = function(){
-    	self.curQuoteBlockDataNum++;
-    	if(self.curQuoteBlockDataNum > self.quoteBlockData.length -1){
-    		self.curQuoteBlockDataNum = 0;
-    	}
-    	self.createQuote();
+
+    this.nextQuote = function() {
+        self.curQuoteBlockDataNum++;
+        if (self.curQuoteBlockDataNum > self.quoteBlockData.length - 1) {
+            self.curQuoteBlockDataNum = 0;
+        }
+        self.createQuote();
     }
-}
-Quote.prototype.getCurQuoteBlock = function() {
-    return this.quoteBlock;
+
+    this.onEvents = {
+        solveQuote: []
+    };
+
+    this.runEvent = function(eventName) {
+        for (var i = 0; i < self.onEvents[eventName].length; i++) {
+            self.onEvents[eventName][i]();
+        }
+    }
 }
 
-Quote.prototype.solveQuote = function() {
-    for (var i = 0; i < this.onQuoteSolveFunc.length; i++) {
-        this.onQuoteSolveFunc[i]();
+Quote.prototype.subscribe = function(eventName, func) {
+    this.onEvents[eventName].push(func);
+};
+
+Quote.prototype.getCurQuoteBlock = function() {
+        return this.quoteBlock;
     }
-};
-// Delegate emulation
-Quote.prototype.onQuoteReveal = function(func) {
-    this.onQuoteRevealFunc.push(func);
-};
-Quote.prototype.onQuoteSolve = function(func) {
-    this.onQuoteSolveFunc.push(func);
-};
 
 Quote.prototype.add = function(data) {
     this.quoteBlockData.push(data);
@@ -202,7 +210,7 @@ Quote.prototype.add = function(data) {
 
 Quote.prototype.createQuote = function() {
     if (this.quoteBlock != undefined) {
-    	this.activeColliders = [];
+        this.activeColliders = [];
         this.quoteBlock.destroy();
         delete this.quoteBlock;
     }
