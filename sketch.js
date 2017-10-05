@@ -105,6 +105,7 @@ function setupEvents() {
     ball.subscribe('loose', quote.hideAllQuote);
     ball.subscribe('loose', soundPlayer.play['looseSound']);
     ball.subscribe('win', player.onWin);
+    ball.subscribe('win', quote.revealWord);
     ball.subscribe('win', soundPlayer.play['winSound']);
     ball.subscribe('leftCollide', soundPlayer.play['pongHitSound']);
     ball.subscribe('leftCollide', quote.revealWord);
