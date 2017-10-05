@@ -19,6 +19,18 @@ var WordBlock = function() {
 WordBlock.prototype.reset = function() {
     this.timer = 20;
 };
+WordBlock.prototype.show = function() {
+    this.sprite.visible = true;
+    this.sprite.width = this.sprite.initWidth;
+    this.sprite.height = this.sprite.initHeight;
+
+};
+WordBlock.prototype.hide = function() {
+    this.sprite.visible = false;
+    this.sprite.width = this.sprite.initWidth;
+    this.sprite.height = this.sprite.initHeight;
+};
+
 WordBlock.prototype.destroy = function() {
     this.sprite.remove();
     delete this.sprite;
@@ -72,6 +84,10 @@ QuoteBlock.prototype.setup = function(strings) {
         var pos = toCornerPos(block, x, y);
 
         // sprite
+        var sprite = block.sprite;
+        sprite.initWidth = sprite.width;
+        sprite.initHeight = sprite.height;
+
         block.sprite.position.set(pos[0], pos[1]);
         block.x = x;
         block.y = y;
@@ -89,7 +105,7 @@ QuoteBlock.prototype.setup = function(strings) {
 QuoteBlock.prototype.getInvisibleBlocks = function() {
     var blocks = [];
     for (var i = 0; i < this.wordBlocks.length; i++) {
-        if (!this.wordBlocks[i].visible) {
+        if (!this.wordBlocks[i].sprite.visible) {
             blocks.push(this.wordBlocks[i]);
         }
     }
@@ -98,7 +114,7 @@ QuoteBlock.prototype.getInvisibleBlocks = function() {
 QuoteBlock.prototype.getVisibleBlocks = function() {
     var blocks = [];
     for (var i = 0; i < this.wordBlocks.length; i++) {
-        if (this.wordBlocks[i].visible) {
+        if (this.wordBlocks[i].sprite.visible) {
             blocks.push(this.wordBlocks[i]);
         }
     }
@@ -107,7 +123,10 @@ QuoteBlock.prototype.getVisibleBlocks = function() {
 QuoteBlock.prototype.hideAllBlocks = function() {
     for (var i = 0; i < this.wordBlocks.length; i++) {
         this.wordBlocks[i].visible = false;
-        this.wordBlocks[i].sprite.visible = false;
+        var sprite = this.wordBlocks[i].sprite;
+        sprite.visible = false;
+        sprite.width = sprite.initWidth;
+        sprite.height = sprite.initHeight;
         this.wordBlocks[i].reset();
     }
 };
@@ -116,14 +135,15 @@ QuoteBlock.prototype.draw = function() {
     for (var i = 0; i < this.wordBlocks.length; i++) {
         var block = this.wordBlocks[i];
 
-        if (block.visible) {
+        if (block.sprite.visible) {
 
             fill(block.color);
             // noStroke();
             // rect(block.x, block.y - block.sprite.height, block.sprite.width, block.timer < 0 ? block.sprite.height : height);
+            var sprite = block.sprite;
 
             block.timer--;
-            fill(255);
+            fill(255, map(sprite.width, 0, sprite.initWidth, 0, 255));
             text(block.text, block.x, block.y);
         }
     }
@@ -149,8 +169,7 @@ var Quote = function() {
 
             if (invisibleBlocks.length > 0) {
                 var randomIndex = int(random(0, invisibleBlocks.length));
-                invisibleBlocks[randomIndex].visible = true;
-                invisibleBlocks[randomIndex].sprite.visible = true;
+                invisibleBlocks[randomIndex].show();
                 self.activeColliders.push(invisibleBlocks[randomIndex].sprite);
             } else {
                 self.runEvent('solveQuote');
@@ -163,8 +182,7 @@ var Quote = function() {
             // hide random sprite
             if (visibleBlocks.length > 0) {
                 var randomIndex = int(random(0, visibleBlocks.length));
-                visibleBlocks[randomIndex].visible = false;
-                visibleBlocks[randomIndex].sprite.visible = false;
+                visibleBlocks[randomIndex].hide();
                 visibleBlocks[randomIndex].reset();
                 // remove current block from colliders
                 var index = self.activeColliders.indexOf(visibleBlocks[randomIndex].sprite);

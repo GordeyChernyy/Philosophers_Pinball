@@ -74,13 +74,13 @@ GameManager.prototype.draw = function() {
     }
 };
 GameManager.prototype.createButton = function(data) {
-    var button = createSprite(width / 2, height / 2, 200, 50);
+    var button = createSprite(width / 2, height - 200, 200, 50);
     var self = this;
 
     // draw any p5 stuff
     this.drawingStack.push(function() {
         textSize(20);
-        text(data['text'], width / 2, height / 2);
+        text(data['text'], width / 2, height - 200);
     });
 
     button.onMousePressed = function() {

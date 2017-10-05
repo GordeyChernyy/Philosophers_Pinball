@@ -16,9 +16,9 @@ var eyeImage, rectImage, handImg;
 var chaosImages;
 
 // sounds
-var mute = true;
+var mute = false;
 var soundPlayer;
-var looseSound, winSound, pongHitSound, pongWallSound, music;
+var looseSound, winSound, pongHitSound, pongWallSound, music, wordHitSound;
 
 // kant
 var kantPlain, kantSad, kantHappy;
@@ -49,6 +49,7 @@ function preload() {
     winSound = loadSound('Assets/sounds/pWin.mp3');
     pongHitSound = loadSound('Assets/sounds/ballHit.mp3');
     pongWallSound = loadSound('Assets/sounds/ballTable.mp3');
+    wordHitSound = loadSound('Assets/sounds/pong.wav');
     // images
     // load chaos images
     chaosImages = [];
@@ -108,9 +109,9 @@ function setupEvents() {
     ball.subscribe('leftCollide', soundPlayer.play['pongHitSound']);
     ball.subscribe('leftCollide', quote.revealWord);
     ball.subscribe('rightCollide', soundPlayer.play['pongHitSound']);
-    ball.subscribe('rightCollide', quote.hideWord);
+    // ball.subscribe('rightCollide', quote.hideWord);
     ball.subscribe('wallCollide', soundPlayer.play['pongWallSound']);
-    ball.subscribe('wordCollide', soundPlayer.play['pongWallSound']);
+    ball.subscribe('wordCollide', soundPlayer.play['wordHitSound']);
 }
 
 function setupGameManager() {
@@ -146,6 +147,7 @@ function setupSoundPlayer() {
     // collect sounds in soundPlayer
     // soundPlayer.isMute = true;
     soundPlayer.add('looseSound', looseSound);
+    soundPlayer.add('wordHitSound', wordHitSound);
     soundPlayer.add('winSound', winSound);
     soundPlayer.add('pongHitSound', pongHitSound);
     soundPlayer.add('pongWallSound', pongWallSound);

@@ -75,28 +75,30 @@ Ball.prototype.bounceWith = function(sprites) {
             var sprite = sprites[i];
             if (this.sprite.bounce(sprite)) {
                 // not the good place to do it here but it is easy for now
-                var w = sprite.width/2;
-                var h = sprite.height/2;
-                var x = sprite.position.x;
-                var y = sprite.position.y;
-                var posx = (x - w/2); 
-                var posy = (y - h/2);
-                // var h 
-                var animator = new TWEEN.Tween(sprite)
-                    .to({
-                        width : w,
-                        height : h
-                    }, 600)
-                    // .repeat(1)
-                    // .yoyo(true)
-                    .easing(TWEEN.Easing.Elastic.Out)
-                    .start()
+                if(sprite.width < sprite.initWidth/2){
+                    sprite.visible = false;
+                    sprite.width = sprite.initWidth;
+                    sprite.height = sprite.initHeigh;
+                }else{                    
+                    // var h 
+                    var w = sprite.width/2;
+                    var h = sprite.height/2;
+                    var animator = new TWEEN.Tween(sprite)
+                        .to({
+                            width: w,
+                            height: h
+                        }, 600)
+                        // .repeat(1)
+                        // .yoyo(true)
+                        .easing(TWEEN.Easing.Elastic.Out)
+                        .start()
 
-                this.runEvent('wordCollide');
-                this.collideCounter++;
-                // how many times it should collide in case of stucking
-                if (this.collideCounter > 5) {
-                    this.collideWithOthers = false;
+                    this.runEvent('wordCollide');
+                    this.collideCounter++;
+                    // how many times it should collide in case of stucking
+                    if (this.collideCounter > 5) {
+                        this.collideWithOthers = false;
+                    }
                 }
             }
         }
