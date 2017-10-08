@@ -10,7 +10,7 @@ var player;
 // text
 var quote;
 
-var quoteDekart, quoteKant, quoteHume, quoteSocrates, quotePlato;
+var quoteDekart, quoteKant, quoteHume, quoteSocrates, quotePlato , quoteTest;
 var candaraFont;
 
 // images
@@ -59,6 +59,7 @@ function preload() {
     // text
     candaraFont = loadFont('Assets/Candarab.ttf');
     quoteDekart = loadStrings('Assets/text/quoteDekart1.txt');
+    quoteTest = loadStrings('Assets/text/quoteTest.txt');
     quoteKant = loadStrings('Assets/text/quoteKant1.txt');
     quoteHume = loadStrings('Assets/text/quoteHume1.txt');
     quoteSocrates = loadStrings('Assets/text/quoteSocrates1.txt');
@@ -117,7 +118,7 @@ function preload() {
 //     SETUP
 // -------------
 function setup() {
-    canvas = createCanvas(windowWidth, windowWidth*0.64);
+    canvas = createCanvas(1000, 640);
     canvas.parent('myContainer');
     width = canvas.width;
     height = canvas.height;
@@ -140,13 +141,17 @@ function setupBackground() {
 }
 
 function setupEvents() {
-    quote.subscribe('solveQuote', gameManager.showLevelScreen);
+    quote.subscribe('solveQuote', gameManager.checkPlayer);
+    gameManager.subscribe('startGame', player.setCharacter);
     gameManager.subscribe('startGame', player.fadeIn);
     gameManager.subscribe('startGame', ball.reset);
     gameManager.subscribe('startGame', aiPlayer.enable);
+    gameManager.subscribe('levelScreen', ball.disable);
     gameManager.subscribe('levelScreen', player.fadeOut);
     gameManager.subscribe('levelScreen', aiPlayer.disable);
-    gameManager.subscribe('levelScreen', ball.disable);
+    gameManager.subscribe('endScreen', ball.disable);
+    gameManager.subscribe('endScreen', player.fadeOut);
+    gameManager.subscribe('endScreen', aiPlayer.disable);
     gameManager.subscribe('nextLevel', quote.nextQuote);
     gameManager.subscribe('nextLevel', player.nextPlayer);
     gameManager.subscribe('nextLevel', player.fadeIn);
@@ -182,29 +187,29 @@ function setupSounds() {
 function setupQuote(argument) {
     quote = new Quote();
     quote.add({
-        name: 'Kant',
-        strings: quoteKant,
+        name: 'Socrates',
+        strings: quoteSocrates, // quoteSocrates,
+        textSize: 40
+    });
+    quote.add({
+        name: 'Plato',
+        strings: quotePlato,
+        textSize: 40
+    });
+    quote.add({
+        name: 'Hume',
+        strings: quoteHume,
         textSize: 40
     });
     quote.add({
         name: 'Dekart',
         strings: quoteDekart,
-        textSize: 30
+        textSize: 40
     });
     quote.add({
-        name: 'Hume',
-        strings: quoteHume,
-        textSize: 30
-    });
-    quote.add({
-        name: 'Socrates',
-        strings: quoteSocrates,
-        textSize: 30
-    });
-    quote.add({
-        name: 'Plato',
-        strings: quotePlato,
-        textSize: 30
+        name: 'Kant',
+        strings: quoteKant,
+        textSize: 40
     });
     quote.createQuote();
 }
@@ -238,36 +243,7 @@ function setupPlayer() {
 
     player = new Player();
 
-    player.addCharacterData({
-        name: 'Kant',
-        faceNormal: kantPlain,
-        faceWin: kantHappy,
-        faceLose: kantSad,
-        eyeImage: eyeImage,
-        faceOffset: new p5.Vector(0, 30),
-        eyeLPos: new p5.Vector(71, 54),
-        eyeRPos: new p5.Vector(99, 54),
-    });
-    player.addCharacterData({
-        name: 'Dekart',
-        faceNormal: dekartPlain,
-        faceWin: dekartHappy,
-        faceLose: dekartSad,
-        eyeImage: eyeImage,
-        faceOffset: new p5.Vector(0, 30),
-        eyeLPos: new p5.Vector(83, 56),
-        eyeRPos: new p5.Vector(113, 56),
-    });
-    player.addCharacterData({
-        name: 'Hume',
-        faceNormal: humePlain,
-        faceWin: humeHappy,
-        faceLose: humeSad,
-        eyeImage: eyeImage,
-        faceOffset: new p5.Vector(0, 50),
-        eyeLPos: new p5.Vector(73, 74),
-        eyeRPos: new p5.Vector(44, 75),
-    });
+
     player.addCharacterData({
         name: 'Socrates',
         faceNormal: socratesPlain,
@@ -288,9 +264,37 @@ function setupPlayer() {
         eyeLPos: new p5.Vector(117, 53),
         eyeRPos: new p5.Vector(93, 52),
     });
-
+    player.addCharacterData({
+        name: 'Hume',
+        faceNormal: humePlain,
+        faceWin: humeHappy,
+        faceLose: humeSad,
+        eyeImage: eyeImage,
+        faceOffset: new p5.Vector(0, 50),
+        eyeLPos: new p5.Vector(73, 74),
+        eyeRPos: new p5.Vector(44, 75),
+    });
+    player.addCharacterData({
+        name: 'Dekart',
+        faceNormal: dekartPlain,
+        faceWin: dekartHappy,
+        faceLose: dekartSad,
+        eyeImage: eyeImage,
+        faceOffset: new p5.Vector(0, 30),
+        eyeLPos: new p5.Vector(83, 56),
+        eyeRPos: new p5.Vector(113, 56),
+    });
+    player.addCharacterData({
+        name: 'Kant',
+        faceNormal: kantPlain,
+        faceWin: kantHappy,
+        faceLose: kantSad,
+        eyeImage: eyeImage,
+        faceOffset: new p5.Vector(0, 30),
+        eyeLPos: new p5.Vector(71, 54),
+        eyeRPos: new p5.Vector(99, 54),
+    });
     player.addHand(handImg);
-    player.setCharacter()
 }
 
 function setupBall() {

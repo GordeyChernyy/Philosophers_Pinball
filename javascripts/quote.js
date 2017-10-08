@@ -167,12 +167,14 @@ QuoteBlock.prototype.setup = function(strings) {
 
         x += textWidth(txt);
 
-        if (x > this.textPos.x + this.bounds.x) {
+        if (x > (this.textPos.x + this.bounds.x - w)) {
             x = this.textPos.x;
             y += this.textSize + 10;
         }
     }
+    this.textHeight = y;
 };
+
 QuoteBlock.prototype.getInvisibleBlocks = function() {
     var blocks = [];
     for (var i = 0; i < this.wordBlocks.length; i++) {
@@ -233,13 +235,16 @@ var Quote = function() {
             // collect invisible blocks
             var invisibleBlocks = self.getCurQuoteBlock().getInvisibleBlocks();
 
-            if (invisibleBlocks.length > 0) {
+            if (invisibleBlocks.length > 1) {
                 var randomIndex = int(random(0, invisibleBlocks.length));
                 invisibleBlocks[randomIndex].show();
                 self.activeColliders.push(invisibleBlocks[randomIndex].sprite);
             } else {
-                self.runEvent('solveQuote');
+                if (invisibleBlocks.length > 0) {
+                    invisibleBlocks[0].show();
+                }
                 self.getCurQuoteBlock().solve();
+                self.runEvent('solveQuote');
             }
         }
     };
@@ -280,7 +285,15 @@ var Quote = function() {
         }
     }
 }
-
+Quote.prototype.getAutorName = function() {
+    return this.getCurQuoteBlock().name;
+}
+Quote.prototype.getTextHeight = function() {
+    return this.getCurQuoteBlock().textHeight;
+}
+Quote.prototype.getTextBounds = function() {
+    return this.getCurQuoteBlock().bounds;
+}
 Quote.prototype.subscribe = function(eventName, func) {
     this.onEvents[eventName].push(func);
 };

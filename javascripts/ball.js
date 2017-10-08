@@ -31,8 +31,11 @@ var Ball = function(image) {
         self.enabled = true;
     }
     this.disable = function() {
+        self.sprite.setSpeed(0, 0);
+        self.sprite.position.set(width / 2, height / 2);
         self.sprite.visible = false;
         self.enabled = false;
+        if (self.animator != undefined) delete self.animator;
     }
 
     this.onEvents = {
@@ -75,14 +78,14 @@ Ball.prototype.bounceWith = function(sprites) {
             var sprite = sprites[i];
             if (this.sprite.bounce(sprite)) {
                 // not the good place to do it here but it is easy for now
-                if(sprite.width < sprite.initWidth/2){
+                if (sprite.width < sprite.initWidth / 2) {
                     sprite.visible = false;
                     sprite.width = sprite.initWidth;
                     sprite.height = sprite.initHeigh;
-                }else{                    
+                } else {
                     // var h 
-                    var w = sprite.width/2;
-                    var h = sprite.height/2;
+                    var w = sprite.width / 2;
+                    var h = sprite.height / 2;
                     var animator = new TWEEN.Tween(sprite)
                         .to({
                             width: w,
@@ -160,12 +163,13 @@ Ball.prototype.paddleB = function() {
     }
 }
 Ball.prototype.resetBall = function(dir) {
+    if (this.animator != undefined) this.animator.stop();
     this.maxSpeed = 5;
     var ballStartSize = 300;
     var ballEndsize = this.sprite.width;
     var drawBall;
     this.sprite.setSpeed(0, 0);
-    this.sprite.position.set(width/2, height/2);
+    this.sprite.position.set(width / 2, height / 2);
 
     var self = this;
     this.drawingStack.push(function() {
@@ -179,7 +183,7 @@ Ball.prototype.resetBall = function(dir) {
         a: 0,
         width: ballStartSize
     };
-    var animator = new TWEEN.Tween(this.animData)
+    this.animator = new TWEEN.Tween(this.animData)
         .to({
             r: 255,
             g: 255,
@@ -208,8 +212,10 @@ Ball.prototype.lose = function() {
 
         this.sprite.position.x = width / 2;
         this.sprite.position.y = height / 2;
-        this.resetBall(-90);
-        this.runEvent('loose');
+        if (this.enabled) {
+            this.runEvent('loose');
+        }
+        if(this.enabled) this.resetBall(-90);
     }
 }
 Ball.prototype.win = function() {
@@ -218,7 +224,9 @@ Ball.prototype.win = function() {
         this.collideWithOthers = false;
         this.sprite.position.x = width / 2;
         this.sprite.position.y = height / 2;
-        this.resetBall(90);
-        this.runEvent('win');
+        if (this.enabled) {
+            this.runEvent('win');
+        }
+        if(this.enabled)  this.resetBall(90);
     }
 };

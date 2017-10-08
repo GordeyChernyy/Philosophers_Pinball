@@ -71,6 +71,7 @@ var Player = function() {
         self.setCharacter();
     }
     this.fadeIn = function() {
+        self.hand.immovable = true;
         self.enable();
         self.getCurCharacter().face.offset.y = -100;
         var animator = new TWEEN.Tween(self.getCurCharacter().face.offset)
@@ -81,6 +82,7 @@ var Player = function() {
             .start()
     }
     this.fadeOut = function() {
+        self.hand.immovable = false;
         var animator = new TWEEN.Tween(self.getCurCharacter().face.offset)
             .to({
                 y: -100
@@ -99,18 +101,34 @@ var Player = function() {
         self.enabled = false;
         self.hand.visible = false;
     }
-};
+    this.setCharacter = function() {
+        if (self.character != undefined) {
+            self.character.destroy();
+            delete self.character;
+        }
+        self.character = new Character(self.characterData[self.curCharacterNum]);
+        self.correctDepth();
+    }
 
+    this.onEvents = {
+        lastPlayer: []
+    };
+
+    this.runEvent = function(eventName) {
+        for (var i = 0; i < self.onEvents[eventName].length; i++) {
+            self.onEvents[eventName][i]();
+        }
+    }
+};
+Player.prototype.isLastPlayer = function() {
+    return this.curCharacterNum === this.characterData.length - 1? true : false;
+
+};
+Player.prototype.subscribe = function(eventName, func) {
+    this.onEvents[eventName].push(func);
+};
 Player.prototype.addCharacterData = function(data) {
     this.characterData.push(data);
-};
-Player.prototype.setCharacter = function() {
-    if (this.character != undefined) {
-        this.character.destroy();
-        delete this.character;
-    }
-    this.character = new Character(this.characterData[this.curCharacterNum]);
-    this.correctDepth();
 };
 
 
@@ -127,7 +145,7 @@ Player.prototype.getPaddle = function() {
 
 Player.prototype.addHand = function(image) {
     this.hand = createSprite();
-    this.hand.position = new p5.Vector(height, width/2); 
+    this.hand.position = new p5.Vector(height, width / 2);
     this.hand.visible = false;
     this.hand.offset = new p5.Vector(20, -50);
     this.hand.immovable = true;

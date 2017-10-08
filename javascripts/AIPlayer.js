@@ -4,6 +4,7 @@ var AIPlayer = function() {
     this.extraSpriteCount = 3;
     this.sprites = [];
     this.paddleSprite = createSprite(0, 0, 100, 10);
+    this.paddleSprite.shapeColor = color(255);
     this.paddleSprite.immovable = true;
     this.pos = new p5.Vector(width / 2, 30);
 
