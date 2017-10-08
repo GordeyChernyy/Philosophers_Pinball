@@ -6,6 +6,8 @@ html, body {
 #myContainer{
 	border: 1px solid gray;
 	width: 1000px;
+	padding: 0;
+	margin: 0;
 	/*display: block;*/
 	float:left;
 }

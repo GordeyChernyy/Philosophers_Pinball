@@ -1,6 +1,7 @@
 var WordBlock = function() {
     this.text;
     this.visible = false;
+    this.isSolve = false;
     // sprite used as a collider
     this.sprite = createSprite();
     this.sprite.immovable = true;
@@ -8,6 +9,7 @@ var WordBlock = function() {
     // position
     this.x = 0;
     this.y = 0;
+    this.seed = random(0, 5000);
     this.height = 0;
     this.width = 0;
     this.initWidth = 0;
@@ -15,23 +17,92 @@ var WordBlock = function() {
     this.color = color(random(0, 120), random(23, 120), random(0, 120));
     this.position = new p5.Vector(0, 0);
     this.timer = 20;
+    this.drawAnimation = function() {};
 };
 WordBlock.prototype.reset = function() {
     this.timer = 20;
 };
+WordBlock.prototype.solve = function() {
+    this.isSolve = true;
+    var self = this;
+    var dir = random(-1, 1);
+    var animator = new TWEEN.Tween(this.sprite.position)
+        .to({
+            x: dir > 0 ? width + self.sprite.width : -self.sprite.width
+        }, random(500, 700))
+        .delay(random(0, 1000))
+        .easing(TWEEN.Easing.Cubic.In)
+        .start()
+
+};
+WordBlock.prototype.draw = function() {
+    if (this.sprite.visible) {
+
+        fill(this.color);
+        // noStroke();
+        // rect(this.x, this.y - this.sprite.height, this.sprite.width, this.timer < 0 ? this.sprite.height : height);
+        var sprite = this.sprite;
+
+        this.timer--;
+        var a = this.isSolve ?
+            map(noise((frameCount + this.seed) / 90), 0, 1, 0, 255) :
+            map(sprite.width, 0, sprite.initWidth, 0, 255);
+        fill(255, a);
+        text(this.text, this.x, this.y);
+    }
+
+    this.drawAnimation();
+};
 WordBlock.prototype.show = function() {
-    this.sprite.visible = true;
-    this.sprite.width = this.sprite.initWidth;
-    this.sprite.height = this.sprite.initHeight;
+    var self = this;
+
+    this.drawAnimation = function() {
+        var x = self.animData['x'];
+        var y = self.animData['y'];
+        var height = self.animData['height'];
+        fill(self.sprite.shapeColor);
+        noStroke();
+        rect(x, y - self.sprite.height, self.sprite.width, height);
+    }
+    this.animData = {
+        x: this.x,
+        y: height,
+        alpha: 0,
+        height: 600
+    };
+    this.animator = new TWEEN.Tween(this.animData)
+        .to({
+            x: self.x,
+            y: self.y,
+            alpha: 255,
+            height: self.sprite.initHeight
+        }, random(500, 700))
+        .easing(TWEEN.Easing.Cubic.Out)
+        .start()
+        .onStop(function() {
+            print('stopAnimation');
+            self.drawAnimation = function() {};
+        })
+        .onComplete(function() {
+            self.drawAnimation = function() {};
+            self.sprite.visible = true;
+            self.sprite.width = self.sprite.initWidth;
+            self.sprite.height = self.sprite.initHeight;
+        })
 
 };
 WordBlock.prototype.hide = function() {
+    if (this.animator != undefined)
+        this.animator.stop();
     this.sprite.visible = false;
     this.sprite.width = this.sprite.initWidth;
     this.sprite.height = this.sprite.initHeight;
 };
 
 WordBlock.prototype.destroy = function() {
+    if (this.animator != undefined)
+        this.animator.stop();
+    delete this.animator;
     this.sprite.remove();
     delete this.sprite;
     delete this.position;
@@ -134,18 +205,13 @@ QuoteBlock.prototype.draw = function() {
     textSize(this.textSize);
     for (var i = 0; i < this.wordBlocks.length; i++) {
         var block = this.wordBlocks[i];
-
-        if (block.sprite.visible) {
-
-            fill(block.color);
-            // noStroke();
-            // rect(block.x, block.y - block.sprite.height, block.sprite.width, block.timer < 0 ? block.sprite.height : height);
-            var sprite = block.sprite;
-
-            block.timer--;
-            fill(255, map(sprite.width, 0, sprite.initWidth, 0, 255));
-            text(block.text, block.x, block.y);
-        }
+        block.draw();
+    }
+};
+QuoteBlock.prototype.solve = function() {
+    for (var i = 0; i < this.wordBlocks.length; i++) {
+        var block = this.wordBlocks[i];
+        block.solve();
     }
 };
 // -------------------------------- QUOTE ---------------------------------------
@@ -173,6 +239,7 @@ var Quote = function() {
                 self.activeColliders.push(invisibleBlocks[randomIndex].sprite);
             } else {
                 self.runEvent('solveQuote');
+                self.getCurQuoteBlock().solve();
             }
         }
     };
@@ -219,8 +286,8 @@ Quote.prototype.subscribe = function(eventName, func) {
 };
 
 Quote.prototype.getCurQuoteBlock = function() {
-        return this.quoteBlock;
-    }
+    return this.quoteBlock;
+}
 
 Quote.prototype.add = function(data) {
     this.quoteBlockData.push(data);

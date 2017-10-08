@@ -10,6 +10,7 @@ var player;
 // text
 var quote;
 var quoteDekart, quoteKant, quoteTest;
+var candaraFont;
 
 // images
 var eyeImage, rectImage, handImg;
@@ -38,8 +39,14 @@ var wallTop, wallBottom;
 // game manager
 var gameManager;
 
+// background
+var bg;
+
+
+
 function preload() {
     // text
+    candaraFont = loadFont('Assets/Candarab.ttf');
     quoteDekart = loadStrings('Assets/text/quoteDekart1.txt');
     quoteKant = loadStrings('Assets/text/quoteKant1.txt');
     quoteTest = loadStrings('Assets/text/quoteTest.txt');
@@ -77,6 +84,7 @@ function setup() {
     width = canvas.width;
     height = canvas.height;
 
+    setupBackground();
     setupSounds();
     setupSoundPlayer();
     setupWalls();
@@ -86,6 +94,11 @@ function setup() {
     setupBall();
     setupGameManager();
     setupEvents();
+}
+
+function setupBackground() {
+    bg = new Background();
+    bg.setup();
 }
 
 function setupEvents() {
@@ -210,13 +223,14 @@ function setupBall() {
 //     UPDATE
 // -------------
 function draw() {
-    background(0, 0, 0);
+    background(0);
     keyEvents();
 
     updatePlayer();
     updateAIPlayer();
     updateBall();
 
+    drawBackground();
     drawSprites();
     drawQuote();
     drawBall();
@@ -224,6 +238,11 @@ function draw() {
 
     TWEEN.update();
 }
+
+function drawBackground() {
+    bg.draw();
+}
+
 function keyEvents() {
     if (keyWentDown('a')) {
         player.fadeOut();

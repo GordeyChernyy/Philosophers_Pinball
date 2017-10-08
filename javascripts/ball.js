@@ -165,6 +165,7 @@ Ball.prototype.resetBall = function(dir) {
     var ballEndsize = this.sprite.width;
     var drawBall;
     this.sprite.setSpeed(0, 0);
+    this.sprite.position.set(width/2, height/2);
 
     var self = this;
     this.drawingStack.push(function() {

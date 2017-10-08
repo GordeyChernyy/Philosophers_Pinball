@@ -44,7 +44,11 @@ var GameManager = function() {
     this.showStartScreen = function(state) {
         self.createButton({
             // TODO : add more parameters like pos, color
-            text: 'play',
+            text: 'PLAY',
+            textSize: 20,
+            x: width / 2,
+            y: height - 100,
+            color: [255, 0, 255],
             onComplete: function() {
                 self.events['startGame']();
             }
@@ -52,10 +56,14 @@ var GameManager = function() {
     };
 
     this.showLevelScreen = function(state) {
-    	self.events['levelScreen']();
+        self.events['levelScreen']();
         self.createButton({
             // TODO : add more parameters like pos, color
             text: 'Next',
+            x: width / 2,
+            y: height - 100,
+            textSize: 20,
+            color: [255, 0, 255],
             onComplete: function() {
                 self.events['nextLevel']();
             }
@@ -74,13 +82,21 @@ GameManager.prototype.draw = function() {
     }
 };
 GameManager.prototype.createButton = function(data) {
-    var button = createSprite(width / 2, height - 200, 200, 50);
+	textFont(candaraFont);
+    textSize(data.textSize);
+    var border = 20;
+    var textW = textWidth(data.text);
+    var button = createSprite(data.x, data.y, textW + border * 2, data.textSize + border * 2);
+    button.shapeColor = color( data.color);
     var self = this;
 
     // draw any p5 stuff
     this.drawingStack.push(function() {
-        textSize(20);
-        text(data['text'], width / 2, height - 200);
+        textSize(data.textSize);
+        var textPosX = data.x - textW / 2;
+        var textPosY = data.y + data.textSize / 3;
+        fill(255);
+        text(data.text, textPosX, textPosY);
     });
 
     button.onMousePressed = function() {
