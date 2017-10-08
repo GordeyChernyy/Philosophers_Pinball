@@ -4,7 +4,7 @@ html, body {
   height: 100%;
 }
 #myContainer{
-	border: 1px solid gray;
+	/*border: 1px solid gray;*/
 	width: 1000px;
 	padding: 0;
 	margin: 0;
@@ -14,9 +14,13 @@ html, body {
 #left{
     width: calc(50% - 500px);
     float:left;
+    padding: 0;
+	margin: 0;
 }
 #right{
     width: calc(50% - 500px);
     float:right;
+    padding: 0;
+	margin: 0;
 }
 

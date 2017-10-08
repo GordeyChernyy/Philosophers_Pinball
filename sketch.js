@@ -117,7 +117,7 @@ function preload() {
 //     SETUP
 // -------------
 function setup() {
-    canvas = createCanvas(1000, 640);
+    canvas = createCanvas(windowWidth, windowWidth*0.64);
     canvas.parent('myContainer');
     width = canvas.width;
     height = canvas.height;
