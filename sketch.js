@@ -202,7 +202,7 @@ function setupQuote(argument) {
         textSize: 40
     });
     quote.add({
-        name: 'Dekart',
+        name: 'Descartes',
         strings: quoteDekart,
         textSize: 40
     });
@@ -275,7 +275,7 @@ function setupPlayer() {
         eyeRPos: new p5.Vector(44, 75),
     });
     player.addCharacterData({
-        name: 'Dekart',
+        name: 'Descartes',
         faceNormal: dekartPlain,
         faceWin: dekartHappy,
         faceLose: dekartSad,
