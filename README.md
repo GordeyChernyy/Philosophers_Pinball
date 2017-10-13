@@ -7,4 +7,5 @@ Throw your wise philosophical ideas to the universe and conquer Chaos. But bewar
 Dedicated to my dear friend C. who taught me how to appreciate philosophy. 
 
 [itch.io link](https://marmishurenko.itch.io/philosopherspong)
+
 [Github pages link](http://gordeychernyy.github.io/Philosophers_Pinball/)
